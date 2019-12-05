@@ -4,4 +4,5 @@
     <string name="title_activity_write_down">WriteDown</string>
     <string name="tab_text_1">支出</string>
     <string name="tab_text_2">收入</string>
+    <string name="default_value">0.0</string>
 </resources>
