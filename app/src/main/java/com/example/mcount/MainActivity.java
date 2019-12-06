@@ -1,6 +1,7 @@
 package com.example.mcount;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private TextView testContent;
+    ArrayList<DailyCost> data = new ArrayList<>();
+
+    private DataBaseHelper mDataBaseHelper;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -27,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mDataBaseHelper = new DataBaseHelper(this);
+
 
         if(Build.VERSION.SDK_INT>=21){  //版本号判断（以下功能只在21及以上版本实现）
             View decorView = getWindow().getDecorView();
@@ -50,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
+        mDataBaseHelper.deleteAllData();
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mAdapter = new MyAdapter(getData());
     }
@@ -62,13 +70,37 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    /*
     private ArrayList<DailyCost> getData() {
-        ArrayList<DailyCost> data = new ArrayList<>();
         String tmp = "";
         for(int i = 0; i < 10; i++) {
             data.add(new DailyCost("支出", R.drawable.duihao,(tmp+i)));
             data.add(new DailyCost("收入", R.drawable.duihao,(tmp+i+10)));
         }
+
+        return data;
+    }
+     */
+
+    private ArrayList<DailyCost> getData() {
+        String tmp = "";
+        for(int i = 0; i < 10; i++) {
+            DailyCost tmpdaily = new DailyCost(R.drawable.duihao);
+            tmpdaily.setName("支出");
+            tmpdaily.setCost(tmp+i);
+            mDataBaseHelper.insertCost(tmpdaily);
+        }
+
+        Cursor cursor = mDataBaseHelper.getAllCostData();
+        if(cursor != null){
+            while(cursor.moveToNext()){
+                DailyCost tmpdaily = new DailyCost(R.drawable.duihao);
+                tmpdaily.setName(cursor.getString(cursor.getColumnIndex("cost_type")));
+                tmpdaily.setCost(cursor.getString(cursor.getColumnIndex("cost_money")));
+                data.add(tmpdaily);
+            }
+        }
+        cursor.close();
 
         return data;
     }

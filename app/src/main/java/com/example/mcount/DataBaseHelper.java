@@ -1,6 +1,8 @@
 package com.example.mcount;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -14,13 +16,26 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db){
         db.execSQL("create table if not exists daily_cost("+
                 "id integer primary key autoincrement, "+
-                "cost_title varchar, "+
-                "cost_date varchar, "+
-                "cost_money varchar)");
+                "cost_type text, "+
+                "cost_money text)");
     }
 
-    public void insertCost(){
+    public void insertCost(DailyCost dailyCost){
+        SQLiteDatabase database = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("cost_type", dailyCost.getName());
+        cv.put("cost_money", dailyCost.getCost());
+        database.insert("daily_cost",null, cv);
+    }
 
+    public Cursor getAllCostData(){
+        SQLiteDatabase database = getWritableDatabase();
+        return database.query("daily_cost", null, null, null, null, null, "cost_money " + "ASC");
+    }
+
+    public void deleteAllData(){
+        SQLiteDatabase database = getWritableDatabase();
+        database.delete("daily_cost", null, null);
     }
 
     @Override

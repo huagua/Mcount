@@ -11,6 +11,22 @@ public class DailyCost {
         this.cost = cost;
     }
 
+    public DailyCost(int imageId){
+        this.imageId = imageId;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void setCost(String cost){
+        this.cost = cost;
+    }
+
+    public void setImageId(int imageId){
+        this.imageId = imageId;
+    }
+
     public String getName(){
         return name;
     }
