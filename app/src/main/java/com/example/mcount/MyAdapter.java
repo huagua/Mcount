@@ -20,6 +20,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         ImageView typeImage;
         TextView typeView;
         TextView moneyView;
+        TextView dateView;
 
         public ViewHolder(View view){
             super(view);
@@ -27,6 +28,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
             typeImage = view.findViewById(R.id.ic_type);
             typeView = view.findViewById(R.id.item_type);
             moneyView = view.findViewById(R.id.item_cost);
+            dateView = view.findViewById(R.id.item_date);
         }
     }
 
@@ -70,6 +72,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         holder.typeImage.setImageResource(cost.getImageId());
         holder.typeView.setText(cost.getName());
         holder.moneyView.setText(cost.getCost());
+        holder.dateView.setText(cost.getDate());
     }
 
     @Override

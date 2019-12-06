@@ -16,6 +16,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db){
         db.execSQL("create table if not exists daily_cost("+
                 "id integer primary key autoincrement, "+
+                "cost_date text, "+
                 "cost_type text, "+
                 "cost_money text)");
     }
@@ -25,12 +26,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put("cost_type", dailyCost.getName());
         cv.put("cost_money", dailyCost.getCost());
+        cv.put("cost_date", dailyCost.getDate());
         database.insert("daily_cost",null, cv);
     }
 
     public Cursor getAllCostData(){
         SQLiteDatabase database = getWritableDatabase();
-        return database.query("daily_cost", null, null, null, null, null, "cost_money " + "ASC");
+        return database.query("daily_cost", null, null, null, null, null, "cost_date " + "ASC");
     }
 
     public void deleteAllData(){

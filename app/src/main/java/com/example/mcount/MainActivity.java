@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
         mDataBaseHelper = new DataBaseHelper(this);
 
-
         if(Build.VERSION.SDK_INT>=21){  //版本号判断（以下功能只在21及以上版本实现）
             View decorView = getWindow().getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE);   //活动的布局会显示在状态栏上面
@@ -70,12 +69,13 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
+
     /*
     private ArrayList<DailyCost> getData() {
         String tmp = "";
         for(int i = 0; i < 10; i++) {
-            data.add(new DailyCost("支出", R.drawable.duihao,(tmp+i)));
-            data.add(new DailyCost("收入", R.drawable.duihao,(tmp+i+10)));
+            data.add(new DailyCost("支出", R.drawable.duihao,(tmp+i),"2012-12-12"));
+            data.add(new DailyCost("收入", R.drawable.duihao,(tmp+i+10), "2012-12-11"));
         }
 
         return data;
@@ -86,32 +86,43 @@ public class MainActivity extends AppCompatActivity {
         String tmp = "";
         for(int i = 0; i < 10; i++) {
             DailyCost tmpdaily = new DailyCost(R.drawable.duihao);
+            tmpdaily.setDate("2012-11-24");
             tmpdaily.setName("支出");
             tmpdaily.setCost(tmp+i);
             mDataBaseHelper.insertCost(tmpdaily);
         }
 
+        queryMsql();
+
+        return data;
+    }
+
+    public void updateAfterAddOne(){
+        data.clear();       //清除原data中的内容
+        queryMsql();        //从sql中重新请求数据
+        mAdapter.notifyDataSetChanged();        //更新recyclerView
+    }
+
+    public void queryMsql(){
         Cursor cursor = mDataBaseHelper.getAllCostData();
         if(cursor != null){
             while(cursor.moveToNext()){
                 DailyCost tmpdaily = new DailyCost(R.drawable.duihao);
                 tmpdaily.setName(cursor.getString(cursor.getColumnIndex("cost_type")));
                 tmpdaily.setCost(cursor.getString(cursor.getColumnIndex("cost_money")));
+                tmpdaily.setDate(cursor.getString(cursor.getColumnIndex("cost_date")));
                 data.add(tmpdaily);
             }
         }
         cursor.close();
-
-        return data;
     }
-
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1 && resultCode == 2){
+            updateAfterAddOne();
+        }else if(requestCode == 3){
             String content = data.getStringExtra("data");
             testContent = findViewById(R.id.test_content);
             testContent.setText(content);

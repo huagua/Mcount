@@ -4,11 +4,13 @@ public class DailyCost {
     private String name;
     private int imageId;
     private String cost;
+    private String date;
 
-    public DailyCost(String name, int imageId, String cost){
+    public DailyCost(String name, int imageId, String cost,String date){
         this.name = name;
         this.imageId = imageId;
         this.cost = cost;
+        this.date = date;
     }
 
     public DailyCost(int imageId){
@@ -27,6 +29,10 @@ public class DailyCost {
         this.imageId = imageId;
     }
 
+    public void setDate(String date){
+        this.date = date;
+    }
+
     public String getName(){
         return name;
     }
@@ -37,5 +43,9 @@ public class DailyCost {
 
     public String getCost(){
         return cost;
+    }
+
+    public String getDate(){
+        return date;
     }
 }
