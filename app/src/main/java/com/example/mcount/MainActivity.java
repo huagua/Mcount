@@ -10,11 +10,19 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     private TextView testContent;
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +45,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        initData();
+        initView();
     }
+
+    private void initData() {
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mAdapter = new MyAdapter(getData());
+    }
+
+    private void initView() {
+        mRecyclerView =findViewById(R.id.cost_view);
+        // 设置布局管理器
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        // 设置adapter
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private ArrayList<DailyCost> getData() {
+        ArrayList<DailyCost> data = new ArrayList<>();
+        String tmp = "";
+        for(int i = 0; i < 10; i++) {
+            data.add(new DailyCost("支出", R.drawable.duihao,(tmp+i)));
+            data.add(new DailyCost("收入", R.drawable.duihao,(tmp+i+10)));
+        }
+
+        return data;
+    }
+
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
