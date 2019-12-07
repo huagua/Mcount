@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        mDataBaseHelper.deleteAllData();
+        //mDataBaseHelper.deleteAllData();
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mAdapter = new MyAdapter(getData());
     }
@@ -69,29 +69,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
-
-    /*
     private ArrayList<DailyCost> getData() {
-        String tmp = "";
-        for(int i = 0; i < 10; i++) {
-            data.add(new DailyCost("支出", R.drawable.duihao,(tmp+i),"2012-12-12"));
-            data.add(new DailyCost("收入", R.drawable.duihao,(tmp+i+10), "2012-12-11"));
-        }
-
-        return data;
-    }
-     */
-
-    private ArrayList<DailyCost> getData() {
-        String tmp = "";
-        for(int i = 0; i < 10; i++) {
-            DailyCost tmpdaily = new DailyCost(R.drawable.duihao);
-            tmpdaily.setDate("2012-11-24");
-            tmpdaily.setName("支出");
-            tmpdaily.setCost(tmp+i);
-            mDataBaseHelper.insertCost(tmpdaily);
-        }
-
         queryMsql();
 
         return data;
@@ -107,11 +85,11 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = mDataBaseHelper.getAllCostData();
         if(cursor != null){
             while(cursor.moveToNext()){
-                DailyCost tmpdaily = new DailyCost(R.drawable.duihao);
-                tmpdaily.setName(cursor.getString(cursor.getColumnIndex("cost_type")));
-                tmpdaily.setCost(cursor.getString(cursor.getColumnIndex("cost_money")));
-                tmpdaily.setDate(cursor.getString(cursor.getColumnIndex("cost_date")));
-                data.add(tmpdaily);
+                DailyCost tmpDaily = new DailyCost(R.drawable.duihao);
+                tmpDaily.setName(cursor.getString(cursor.getColumnIndex("cost_type")));
+                tmpDaily.setCost(cursor.getString(cursor.getColumnIndex("cost_money")));
+                tmpDaily.setDate(cursor.getString(cursor.getColumnIndex("cost_date")));
+                data.add(tmpDaily);
             }
         }
         cursor.close();

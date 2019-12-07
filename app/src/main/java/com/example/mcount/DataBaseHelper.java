@@ -32,7 +32,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public Cursor getAllCostData(){
         SQLiteDatabase database = getWritableDatabase();
-        return database.query("daily_cost", null, null, null, null, null, "cost_date " + "ASC");
+        return database.query("daily_cost", null, null, null, null, null, "id " + "DESC");
     }
 
     public void deleteAllData(){
