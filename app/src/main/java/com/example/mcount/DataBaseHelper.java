@@ -6,6 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+
+/*
+* 定义操作数据库的一些方法
+* onCreate          创建表
+* insertCost        插入一条账单
+* getAllCostData    获取数据库中所有的账单
+* deleteAllData     删除数据库中所有数据
+* onUpgrade         升级数据库
+* */
+
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     public DataBaseHelper(Context context){
@@ -38,6 +48,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void deleteAllData(){
         SQLiteDatabase database = getWritableDatabase();
         database.delete("daily_cost", null, null);
+    }
+
+    public void deleteCost(DailyCost dailyCost){
+        SQLiteDatabase database = getWritableDatabase();
+        String[] tmp = new String[3];
+        tmp[0] = dailyCost.getName();
+        tmp[1] = dailyCost.getCost();
+        tmp[2] = dailyCost.getDate();
+        //String[] tmp = new String[]{dailyCost.getName(),dailyCost.getCost(),dailyCost.getDate()};
+        database.delete("daily_cost","cost_type=? and cost_money=? and cost_date=?",tmp);
+        //database.delete("daily_cost","cost_type=?",new String[] {"54"});
+
     }
 
     @Override

@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+//RecyclerView的适配器
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     private List<DailyCost> mDailyCost;
 
+    //静态内部类
     static class ViewHolder extends RecyclerView.ViewHolder{
         View costView;
         ImageView typeImage;
@@ -32,11 +34,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         }
     }
 
+    public interface OnremoveListnner{
+        void  ondelect(int i);
+    }
+    private OnremoveListnner onremoveListnner;
+
+    public void setOnremoveListnner(OnremoveListnner onremoveListnner) {
+        this.onremoveListnner = onremoveListnner;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cost_item,parent, false);
         final ViewHolder holder = new ViewHolder(view);
+
+        //设置点击监听事件
         holder.costView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,6 +58,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
                 Toast.makeText(v.getContext(),"你点击了View"+cost.getName(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        /*
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View v) {
+
+
+            }
+        });
+
+         */
 
         holder.typeImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,9 +87,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
                 Toast.makeText(v.getContext(),"你点击了View"+cost.getCost(), Toast.LENGTH_SHORT).show();
             }
         });
+
         return holder;
     }
 
+    //动态更新值
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DailyCost cost = mDailyCost.get(position);
@@ -80,6 +106,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         return mDailyCost.size();
     }
 
+    //构造函数
     public MyAdapter(List<DailyCost> CostList) {
         mDailyCost = CostList;
     }

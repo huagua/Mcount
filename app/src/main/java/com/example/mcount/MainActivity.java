@@ -11,12 +11,19 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Collections;
+
+/*
+* 主页面：显示账单列表
+* */
 
 public class MainActivity extends AppCompatActivity {
     private TextView testContent;
@@ -27,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private ItemTouchHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +67,39 @@ public class MainActivity extends AppCompatActivity {
         //mDataBaseHelper.deleteAllData();
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mAdapter = new MyAdapter(getData());
+
+        //实现侧滑删除
+        helper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+            @Override
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                //首先回调的方法 返回int表示是否监听该方向
+                int dragFlags = ItemTouchHelper.UP|ItemTouchHelper.DOWN;//拖拽
+                int swipeFlags = ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT;//侧滑删除
+                return makeMovementFlags(dragFlags,swipeFlags);
+            }
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                //滑动事件
+                Collections.swap(data,viewHolder.getAdapterPosition(),target.getAdapterPosition());
+                mAdapter.notifyItemMoved(viewHolder.getAdapterPosition(),target.getAdapterPosition());
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                //侧滑事件
+                mDataBaseHelper.deleteCost(data.get(viewHolder.getAdapterPosition()));
+                data.remove(viewHolder.getAdapterPosition());
+                mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+            }
+
+            @Override
+            public boolean isLongPressDragEnabled() {
+                //是否可拖拽
+                return true;
+            }
+        });
     }
 
     private void initView() {
@@ -67,11 +108,17 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         // 设置adapter
         mRecyclerView.setAdapter(mAdapter);
+
+        helper.attachToRecyclerView(mRecyclerView);
+
+        //设置系统默认动画
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+
     }
 
     private ArrayList<DailyCost> getData() {
         queryMsql();
-
         return data;
     }
 

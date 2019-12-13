@@ -1,5 +1,10 @@
 package com.example.mcount;
 
+/*
+    定义了账单类：类型name、类型图标imageId、金额cost、日期date
+    并定义了相应的方法
+ */
+
 public class DailyCost {
     private String name;
     private int imageId;
