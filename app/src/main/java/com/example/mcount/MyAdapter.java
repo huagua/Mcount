@@ -34,15 +34,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         }
     }
 
-    public interface OnremoveListnner{
-        void  ondelect(int i);
-    }
-    private OnremoveListnner onremoveListnner;
-
-    public void setOnremoveListnner(OnremoveListnner onremoveListnner) {
-        this.onremoveListnner = onremoveListnner;
-    }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
@@ -58,17 +49,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
                 Toast.makeText(v.getContext(),"你点击了View"+cost.getName(), Toast.LENGTH_SHORT).show();
             }
         });
-
-        /*
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener(){
-            @Override
-            public boolean onLongClick(View v) {
-
-
-            }
-        });
-
-         */
 
         holder.typeImage.setOnClickListener(new View.OnClickListener() {
             @Override

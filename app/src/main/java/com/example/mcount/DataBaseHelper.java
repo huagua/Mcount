@@ -43,7 +43,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public Cursor getAllCostData(){
         SQLiteDatabase database = getWritableDatabase();
-        return database.query("daily_cost", null, null, null, null, null, "id " + "DESC");
+        return database.query("daily_cost", null, null, null, null, null, "cost_date " + "DESC");
     }
 
     public void deleteAllData(){
@@ -51,6 +51,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         database.delete("daily_cost", null, null);
     }
 
+    //删除一条记录
     public void deleteCost(DailyCost dailyCost){
         SQLiteDatabase database = getWritableDatabase();
         String[] tmp = new String[3];

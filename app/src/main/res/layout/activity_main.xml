@@ -14,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-
         <include layout="@layout/content_main" />
 
         <LinearLayout
@@ -28,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:textColor="#ffffff"
+                android:textColor="#000000"
                 android:text="账单明细："
                 android:padding="5dp" />
 
@@ -37,12 +36,11 @@
                     android:scrollbars="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#8FFFFFFF"/>
+                    android:background="@drawable/border"/>
 
         </LinearLayout>
 
     </LinearLayout>
-
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

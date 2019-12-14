@@ -6,14 +6,14 @@
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp">
+    android:padding="5dp"
+    android:layout_margin="5dp">
 
     <ImageView
         android:id="@+id/ic_type"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_margin="5dp"/>
-
 
     <TextView
         android:id="@+id/item_type"

@@ -1,6 +1,5 @@
 package com.example.mcount.ui.main;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -70,6 +69,7 @@ public class PlaceholderFragment extends Fragment {
         final TimePicker timePicker = root.findViewById(R.id.pick_time);
         final DatePicker datePicker = root.findViewById(R.id.pick_date);
 
+        //获取当前tab的位置，1是支出，2是收入
         final int position = getArguments().getInt(ARG_SECTION_NUMBER);
 
         fabConfirm.setOnClickListener(new View.OnClickListener() {
@@ -83,20 +83,58 @@ public class PlaceholderFragment extends Fragment {
                     }else
                         dailyCost.setCost(inputMoney.getText().toString());
 
-                if(inputType != null)  dailyCost.setName(inputType.getText().toString());
+                    //    if(getActivity()!= null)
+                            //Toast.makeText(getActivity().getApplicationContext(),"请输入金额！",Toast.LENGTH_SHORT).show();
+
+
+                if(inputType != null)
+                //if(!inputType.getText().equals(""))
+                    dailyCost.setName(inputType.getText().toString());
 
                 String tmpDate = "";
                 if(Build.VERSION.SDK_INT>=21){
-                    tmpDate+=datePicker.getDayOfMonth()+"/"+(datePicker.getMonth()+1)+"  "+timePicker.getHour()+":"+timePicker.getMinute();
+
+                    String minute = "";
+                    if(timePicker.getMinute() < 10){
+                        minute+="0"+timePicker.getMinute();
+                    }else{
+                        minute+=timePicker.getMinute();
+                    }
+
+                    String date = "";
+                    if(datePicker.getDayOfMonth() < 10){
+                        date += " "+datePicker.getDayOfMonth();
+                    }else{
+                        date += datePicker.getDayOfMonth();
+                    }
+
+                    String month = "";
+                    if(datePicker.getMonth()+1 < 10){
+                        month += " "+(datePicker.getMonth()+1);
+                    }else{
+                        month += (datePicker.getMonth()+1);
+                    }
+
+                    String hour = "";
+                    if(timePicker.getHour() < 10){
+                        hour += " "+timePicker.getHour();
+                    }else{
+                        hour += timePicker.getHour();
+                    }
+
+                    tmpDate+=month+"-"+date+"  "+hour+":"+minute;
                 }
-                dailyCost.setDate(tmpDate);
 
-                //将该条账单插入数据库中
-                mDataBase.insertCost(dailyCost);
+                if(!dailyCost.getCost().equals("") && !dailyCost.getCost().equals("")){
+                    dailyCost.setDate(tmpDate);
 
-                //获取writeDown的实例然后调用返回方法
-                WriteDown writeDown = (WriteDown)getActivity();
-                writeDown.goBackMain();
+                    //将该条账单插入数据库中
+                    mDataBase.insertCost(dailyCost);
+
+                    //获取writeDown的实例然后调用返回方法
+                    WriteDown writeDown = (WriteDown)getActivity();
+                    writeDown.goBackMain();
+                }
             }
         });
 
