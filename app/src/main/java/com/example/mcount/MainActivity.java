@@ -26,7 +26,6 @@ import java.util.Collections;
 * */
 
 public class MainActivity extends AppCompatActivity {
-    private TextView testContent;
     ArrayList<DailyCost> data = new ArrayList<>();
 
     private DataBaseHelper mDataBaseHelper;
@@ -35,7 +34,9 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ItemTouchHelper helper;
+    private TextView total;
 
+    private Double totalAccout = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +92,14 @@ public class MainActivity extends AppCompatActivity {
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 //侧滑事件
                 mDataBaseHelper.deleteCost(data.get(viewHolder.getAdapterPosition()));
+
+                //删除之后重新设置总花销金额
+                totalAccout -= Double.parseDouble(data.get(viewHolder.getAdapterPosition()).getCost());
+                total = findViewById(R.id.test_content);
+                total.setText(Double.toString(totalAccout));
+
                 data.remove(viewHolder.getAdapterPosition());
+
                 mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
             }
 
@@ -130,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void queryMsql(){
+        totalAccout = 0.0;
         Cursor cursor = mDataBaseHelper.getAllCostData();
         if(cursor != null){
             while(cursor.moveToNext()){
@@ -138,20 +147,23 @@ public class MainActivity extends AppCompatActivity {
                 tmpDaily.setCost(cursor.getString(cursor.getColumnIndex("cost_money")));
                 tmpDaily.setDate(cursor.getString(cursor.getColumnIndex("cost_date")));
                 data.add(tmpDaily);
+                totalAccout += Double.parseDouble(tmpDaily.getCost());
             }
         }
+
+        total = findViewById(R.id.test_content);
+        total.setText(Double.toString(totalAccout));
+
         cursor.close();
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1 && resultCode == 2){
             updateAfterAddOne();
-        }else if(requestCode == 3){
-            String content = data.getStringExtra("data");
-            testContent = findViewById(R.id.test_content);
-            testContent.setText(content);
         }
     }
 

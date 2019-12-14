@@ -77,7 +77,7 @@ public class WriteDown extends AppCompatActivity {
 
                 if(inputMoney != null)
                     if(position == 0){
-                        dailyCost.setCost("- "+inputMoney.getText().toString());
+                        dailyCost.setCost("-"+inputMoney.getText().toString());
                     }else
                         dailyCost.setCost(inputMoney.getText().toString());
 
