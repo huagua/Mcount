@@ -71,5 +71,17 @@
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintTop_creator="1" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
+        app:srcCompat="@drawable/duihao"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

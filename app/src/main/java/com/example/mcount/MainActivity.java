@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         initView();
     }
 
+
+    //初始化数据
     private void initData() {
         //mDataBaseHelper.deleteAllData();
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -111,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //初始化账单列表
     private void initView() {
         mRecyclerView =findViewById(R.id.cost_view);
         // 设置布局管理器
@@ -131,12 +134,14 @@ public class MainActivity extends AppCompatActivity {
         return data;
     }
 
+    //增加一条记录后进行刷新
     public void updateAfterAddOne(){
         data.clear();       //清除原data中的内容
         queryMsql();        //从sql中重新请求数据
         mAdapter.notifyDataSetChanged();        //更新recyclerView
     }
 
+    //搜索数据库
     public void queryMsql(){
         totalAccout = 0.0;
         Cursor cursor = mDataBaseHelper.getAllCostData();
@@ -147,7 +152,9 @@ public class MainActivity extends AppCompatActivity {
                 tmpDaily.setCost(cursor.getString(cursor.getColumnIndex("cost_money")));
                 tmpDaily.setDate(cursor.getString(cursor.getColumnIndex("cost_date")));
                 data.add(tmpDaily);
-                totalAccout += Double.parseDouble(tmpDaily.getCost());
+                if(!tmpDaily.getCost().equals("")){
+                    totalAccout += Double.parseDouble(tmpDaily.getCost());
+                }
             }
         }
 
@@ -159,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    //从编辑页面传送信息到主页面，如果resultCode为2就刷新列表
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
