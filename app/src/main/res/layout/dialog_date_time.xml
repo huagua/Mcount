@@ -4,29 +4,12 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:text="请选择日期"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp" />
-
     <DatePicker
         android:id="@+id/pick_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:calendarViewShown="false"
-        android:datePickerMode="spinner" />
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dip"
-        android:singleLine="true"
-        android:text="请选择时间"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:datePickerMode="spinner"/>
 
     <TimePicker
         android:id="@+id/pick_time"

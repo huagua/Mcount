@@ -3,6 +3,7 @@ package com.example.mcount.ui.main;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,6 +25,8 @@ import com.example.mcount.DataBaseHelper;
 import com.example.mcount.R;
 import com.example.mcount.WriteDown;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Calendar;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -57,6 +60,7 @@ public class PlaceholderFragment extends Fragment {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         pageViewModel.setIndex(index);
+
     }
 
     @Override
@@ -73,6 +77,9 @@ public class PlaceholderFragment extends Fragment {
         final EditText inputType = root.findViewById(R.id.type);
 
         final TextView dateAndTime = root.findViewById(R.id.text_date_time);
+        //提供一个初始值给日期
+        initTmpDate();
+        dateAndTime.setText(tmpDate);
 
         //获取当前tab的位置，1是支出，2是收入
         final int position = getArguments().getInt(ARG_SECTION_NUMBER);
@@ -87,6 +94,7 @@ public class PlaceholderFragment extends Fragment {
                 final DatePicker datePicker = view.findViewById(R.id.pick_date);
                 builder.setView(view);
 
+                tmpDate = "";
                 builder.setTitle("选取起始时间");
                 builder.setPositiveButton("确  定", new DialogInterface.OnClickListener() {
                     @Override
@@ -139,6 +147,7 @@ public class PlaceholderFragment extends Fragment {
                 });
 
                 Dialog dialog = builder.create();
+                //dialog.getWindow().setBackgroundDrawableResource(R.color.colorAccent);设置dialog背景色，略丑，
                 dialog.show();
             }
         });
@@ -165,43 +174,6 @@ public class PlaceholderFragment extends Fragment {
                 //if(!inputType.getText().equals(""))
                     dailyCost.setName(inputType.getText().toString());
 
-                /*
-                String tmpDate = "";
-                if(Build.VERSION.SDK_INT>=21){
-
-                    String minute = "";
-                    if(timePicker.getMinute() < 10){
-                        minute+="0"+timePicker.getMinute();
-                    }else{
-                        minute+=timePicker.getMinute();
-                    }
-
-                    String date = "";
-                    if(datePicker.getDayOfMonth() < 10){
-                        date += " "+datePicker.getDayOfMonth();
-                    }else{
-                        date += datePicker.getDayOfMonth();
-                    }
-
-                    String month = "";
-                    if(datePicker.getMonth()+1 < 10){
-                        month += " "+(datePicker.getMonth()+1);
-                    }else{
-                        month += (datePicker.getMonth()+1);
-                    }
-
-                    String hour = "";
-                    if(timePicker.getHour() < 10){
-                        hour += " "+timePicker.getHour();
-                    }else{
-                        hour += timePicker.getHour();
-                    }
-
-                    tmpDate+=month+"-"+date+"  "+hour+":"+minute;
-                }
-
-                 */
-
 
                 tmpDate = dateAndTime.getText().toString();
 
@@ -226,5 +198,54 @@ public class PlaceholderFragment extends Fragment {
         });
 
         return root;
+    }
+
+    //初始化tmpDate的值为当前时间
+    public void initTmpDate(){
+        tmpDate = "";
+        Calendar calendar = Calendar.getInstance();
+
+        //获取系统的日期
+        //月
+        int month = calendar.get(Calendar.MONTH)+1;
+        //日
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        //获取系统时间
+        //小时
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        //分钟
+        int minute = calendar.get(Calendar.MINUTE);
+
+        String minuteS = "";
+        if(minute < 10){
+            minuteS+="0"+minute;
+        }else{
+            minuteS+=minute;
+        }
+
+        String dayS = "";
+        if(day < 10){
+            dayS += " "+day;
+        }else{
+            dayS += day;
+        }
+
+        String monthS = "";
+        if(month < 10){
+            monthS += " "+month;
+        }else{
+            monthS += month;
+        }
+
+        String hourS = "";
+        if(hour < 10){
+            hourS += " "+hour;
+        }else{
+            hourS += hour;
+        }
+
+        tmpDate+=monthS+"-"+dayS+"  "+hourS+":"+minuteS;
+
     }
 }

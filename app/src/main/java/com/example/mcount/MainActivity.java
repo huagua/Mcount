@@ -44,10 +44,11 @@ public class MainActivity extends AppCompatActivity {
 
         mDataBaseHelper = new DataBaseHelper(this);
 
-        if(Build.VERSION.SDK_INT>=21){  //版本号判断（以下功能只在21及以上版本实现）
+        if(Build.VERSION.SDK_INT>=23){  //版本号判断（以下功能只在21及以上版本实现）
             View decorView = getWindow().getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE);   //活动的布局会显示在状态栏上面
             getWindow().setStatusBarColor(Color.TRANSPARENT);   //将状态栏设置为透明色
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//将状态栏字体设为黑色，该功能在23及以上版本实现
         }
 
         setContentView(R.layout.activity_main);

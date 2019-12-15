@@ -15,7 +15,7 @@
         android:hint="type"
         android:textColorHint="#817F7F"
         android:gravity="end"
-        android:textSize="30sp"
+        android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/constraintLayout"
         tools:layout_constraintLeft_creator="1"
@@ -31,7 +31,7 @@
         android:hint="@string/default_value"
         android:inputType="number"
         android:textColorHint="#817F7F"
-        android:textSize="30sp"
+        android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/constraintLayout"
         tools:layout_constraintLeft_creator="1"
@@ -52,15 +52,20 @@
         android:id="@+id/text_date_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="200dp"
         android:layout_marginTop="152dp"
+        android:layout_marginLeft="25dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:clickable="true"
         android:focusable="auto"
-        android:hint="请选择日期与时间"
+        android:gravity="center"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/constraintLayout"
         tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        tools:layout_constraintTop_creator="1"
+        android:background="@drawable/text_view_border"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_confirm"
@@ -70,7 +75,7 @@
         android:layout_margin="@dimen/fab_margin"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
-        app:srcCompat="@drawable/duihao"
+        app:srcCompat="@drawable/confirm"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1" />
 
