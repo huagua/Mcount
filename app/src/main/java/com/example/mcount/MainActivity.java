@@ -99,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
                 //删除之后重新设置总花销金额
                 totalAccout -= Double.parseDouble(data.get(viewHolder.getAdapterPosition()).getCost());
                 total = findViewById(R.id.test_content);
-                total.setText(Double.toString(totalAccout));
+                String totalString = Double.toString(totalAccout);
+                total.setText(totalString.substring(0,totalString.indexOf(".")+3));
 
                 data.remove(viewHolder.getAdapterPosition());
 
@@ -160,7 +161,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         total = findViewById(R.id.test_content);
-        total.setText(Double.toString(totalAccout));
+        String totalString = Double.toString(totalAccout);
+        total.setText(totalString.substring(0,totalString.indexOf('.')+3));
 
         cursor.close();
     }
