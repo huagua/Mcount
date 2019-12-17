@@ -10,6 +10,14 @@
     android:background="#FFFFFF">
     <!--android:background="@drawable/bg_main"-->
 
+    <Button
+        android:id="@+id/caidan_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/caidan"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"/>
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"

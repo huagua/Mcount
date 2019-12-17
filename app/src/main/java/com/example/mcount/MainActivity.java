@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private ItemTouchHelper helper;
     private TextView total;
+    private Button caidanButton;
 
     private Double totalAccount = 0.0;
 
@@ -57,6 +59,15 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, WriteDown.class);
+                startActivityForResult(intent,1);
+            }
+        });
+
+        caidanButton = findViewById(R.id.caidan_button);
+        caidanButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
                 Intent intent = new Intent(MainActivity.this, WriteDown.class);
                 startActivityForResult(intent,1);
             }
