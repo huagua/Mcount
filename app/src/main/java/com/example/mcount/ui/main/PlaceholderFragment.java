@@ -3,7 +3,6 @@ package com.example.mcount.ui.main;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +12,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -84,7 +84,7 @@ public class PlaceholderFragment extends Fragment {
         //获取当前tab的位置，1是支出，2是收入
         final int position = getArguments().getInt(ARG_SECTION_NUMBER);
 
-        //设置监听事件
+        //设置选择日期和时间按钮的监听事件
         dateAndTime.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0) {
@@ -158,33 +158,37 @@ public class PlaceholderFragment extends Fragment {
         fabConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //获取writeDown的实例然后调用返回方法
+                WriteDown writeDown = (WriteDown)getActivity();
+
                 DailyCost dailyCost = new DailyCost(R.drawable.duihao);
 
-                if(inputMoney != null)
-                    if(position == 1){
+                //判断用户是否输入了内容
+                if(inputMoney.getText().toString().equals("") || inputType.getText().toString().equals("")){
+
+                    //如果没有输入金额就弹出"请输入金额"
+                    if(inputMoney.getText().toString().equals(""))
+                        writeDown.showToast(1);
+
+                    //如果没有输入类型就弹出"请输入类型"
+                    if(inputType.getText().toString().equals(""))
+                        writeDown.showToast(2);
+                }else{
+                    //判断当前是收入还是支出
+                    if(position == 1)
                         dailyCost.setCost("-"+inputMoney.getText().toString());
-                    }else
+                    else
                         dailyCost.setCost(inputMoney.getText().toString());
 
-                    //    if(getActivity()!= null)
-                            //Toast.makeText(getActivity().getApplicationContext(),"请输入金额！",Toast.LENGTH_SHORT).show();
-
-
-                if(inputType != null)
-                //if(!inputType.getText().equals(""))
                     dailyCost.setName(inputType.getText().toString());
 
+                    tmpDate = dateAndTime.getText().toString();
 
-                tmpDate = dateAndTime.getText().toString();
-
-                if(!dailyCost.getCost().equals("") && !dailyCost.getCost().equals("")){
                     dailyCost.setDate(tmpDate);
 
                     //将该条账单插入数据库中
                     mDataBase.insertCost(dailyCost);
 
-                    //获取writeDown的实例然后调用返回方法
-                    WriteDown writeDown = (WriteDown)getActivity();
                     writeDown.goBackMain();
                 }
             }

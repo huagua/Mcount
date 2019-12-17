@@ -3,6 +3,7 @@ package com.example.mcount;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -48,6 +49,14 @@ public class WriteDown extends AppCompatActivity {
                 finish();
             }
         });
+
+    }
+
+    public void showToast(int code){
+        if(code == 1)
+            Toast.makeText(this,"请输入金额！", Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this,"请输入类型！", Toast.LENGTH_SHORT).show();
 
     }
 

@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private ItemTouchHelper helper;
     private TextView total;
 
-    private Double totalAccout = 0.0;
+    private Double totalAccount = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,9 +97,9 @@ public class MainActivity extends AppCompatActivity {
                 mDataBaseHelper.deleteCost(data.get(viewHolder.getAdapterPosition()));
 
                 //删除之后重新设置总花销金额
-                totalAccout -= Double.parseDouble(data.get(viewHolder.getAdapterPosition()).getCost());
+                totalAccount -= Double.parseDouble(data.get(viewHolder.getAdapterPosition()).getCost());
                 total = findViewById(R.id.test_content);
-                String totalString = Double.toString(totalAccout);
+                String totalString = Double.toString(totalAccount);
                 total.setText(totalString.substring(0,totalString.indexOf(".")+3));
 
                 data.remove(viewHolder.getAdapterPosition());
@@ -127,8 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
         //设置系统默认动画
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-
+        
     }
 
     private ArrayList<DailyCost> getData() {
@@ -145,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
     //搜索数据库
     public void queryMsql(){
-        totalAccout = 0.0;
+        totalAccount = 0.0;
         Cursor cursor = mDataBaseHelper.getAllCostData();
         if(cursor != null){
             while(cursor.moveToNext()){
@@ -155,13 +154,13 @@ public class MainActivity extends AppCompatActivity {
                 tmpDaily.setDate(cursor.getString(cursor.getColumnIndex("cost_date")));
                 data.add(tmpDaily);
                 if(!tmpDaily.getCost().equals("")){
-                    totalAccout += Double.parseDouble(tmpDaily.getCost());
+                    totalAccount += Double.parseDouble(tmpDaily.getCost());
                 }
             }
         }
 
         total = findViewById(R.id.test_content);
-        String totalString = Double.toString(totalAccout);
+        String totalString = Double.toString(totalAccount);
         total.setText(totalString.substring(0,totalString.indexOf('.')+3));
 
         cursor.close();

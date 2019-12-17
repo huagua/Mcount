@@ -37,7 +37,6 @@
         android:textSize="15sp"
         android:layout_marginLeft="15dp"/>
 
-
     <TextView
         android:id="@+id/item_cost"
         android:layout_width="0dp"
