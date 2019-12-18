@@ -5,8 +5,11 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private Button caidanButton;
     private DrawerLayout drawerLayout;
     private NavigationView navView;
+    private ImageView userHead;
+    private Menu navMenu;
 
     private Double totalAccount = 0.0;
 
@@ -60,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//将状态栏字体设为黑色，该功能在23及以上版本实现
         }
 
-
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,9 +85,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         initData();
         initView();
+
+        //获取navView的header对象，实现点击头像跳转页面
+        View navHeader = navView.getHeaderView(0);
+        userHead = navHeader.findViewById(R.id.user_img);
+
+        userHead.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(MainActivity.this, Login.class);
+                startActivityForResult(intent, 2);
+            }
+        });
+
+        navMenu = navView.getMenu();
+        navMenu.findItem(R.id.nav_login).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent = new Intent(MainActivity.this, Login.class);
+                startActivityForResult(intent, 2);
+                return true;
+            }
+        });
 
     }
 

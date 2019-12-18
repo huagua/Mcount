@@ -13,6 +13,7 @@
         android:id="@+id/user_img"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:clickable="true"
         app:srcCompat="@drawable/user"/>
 
     <TextView

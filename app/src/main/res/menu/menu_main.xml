@@ -4,8 +4,8 @@
     tools:showIn="nav_view">
     <group>
         <item
-            android:id="@+id/nav_home"
-            android:title="home" />
+            android:id="@+id/nav_login"
+            android:title="login" />
     </group>
 
     <item android:title="user">
