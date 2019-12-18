@@ -10,6 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Login"></activity>
+        <activity android:name=".Register"></activity>
+        <activity android:name=".Resetpwd"></activity>
         <activity
             android:name=".WriteDown"
             android:label="@string/title_activity_write_down"
