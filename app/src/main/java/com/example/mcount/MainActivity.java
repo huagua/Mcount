@@ -10,12 +10,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,14 +37,21 @@ public class MainActivity extends AppCompatActivity {
     private ItemTouchHelper helper;
     private TextView total;
     private Button caidanButton;
+    private DrawerLayout drawerLayout;
+    private NavigationView navView;
 
     private Double totalAccount = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         mDataBaseHelper = new DataBaseHelper(this);
+
+        //获取drawerLayout和navigationView的实例
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navView = findViewById(R.id.nav_view);
 
         if(Build.VERSION.SDK_INT>=23){  //版本号判断（以下功能只在21及以上版本实现）
             View decorView = getWindow().getDecorView();
@@ -51,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//将状态栏字体设为黑色，该功能在23及以上版本实现
         }
 
-        setContentView(R.layout.activity_main);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -62,14 +70,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //点击按钮打开侧滑菜单
         caidanButton = findViewById(R.id.caidan_button);
         caidanButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Intent intent = new Intent(MainActivity.this, WriteDown.class);
-                startActivityForResult(intent,1);
+                if(!drawerLayout.isDrawerOpen(navView)){
+                    drawerLayout.openDrawer(navView);
+                }
             }
         });
+
 
         initData();
         initView();
@@ -110,7 +121,12 @@ public class MainActivity extends AppCompatActivity {
                 totalAccount -= Double.parseDouble(data.get(viewHolder.getAdapterPosition()).getCost());
                 total = findViewById(R.id.test_content);
                 String totalString = Double.toString(totalAccount);
-                total.setText(totalString.substring(0,totalString.indexOf(".")+3));
+
+                //判断是否小数点后面有多于两位的，如果多于两位小数点后就保留两位
+                if((totalString.indexOf('.')+3)<(totalString.length()-1))
+                    total.setText(totalString.substring(0,totalString.indexOf('.')+3));
+                else
+                    total.setText(totalString);
 
                 data.remove(viewHolder.getAdapterPosition());
 
@@ -171,7 +187,11 @@ public class MainActivity extends AppCompatActivity {
 
         total = findViewById(R.id.test_content);
         String totalString = Double.toString(totalAccount);
-        total.setText(totalString.substring(0,totalString.indexOf('.')+3));
+
+        if((totalString.indexOf('.')+3)<(totalString.length()-1))
+            total.setText(totalString.substring(0,totalString.indexOf('.')+3));
+        else
+            total.setText(totalString);
 
         cursor.close();
     }
