@@ -19,9 +19,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="注册"
+            android:background="@drawable/button_style_concel"
             android:id="@+id/login_btn_register"
             android:textColor="#ffffff"
-            android:background="#e52525"
             android:textSize="20dp"
             android:layout_below="@+id/login_btn_login"
             android:layout_alignParentLeft="true"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:text="登录"
             android:id="@+id/login_btn_login"
-            android:background="#545bcb"
+            android:background="@drawable/button_style_confirm"
             android:textSize="20dp"
             android:textColor="#ffffff"
             android:layout_below="@+id/login_edit_pwd"
@@ -43,16 +43,17 @@
 
         <ImageView
             android:layout_width="300dp"
-            android:layout_height="150dp"
+            android:layout_height="100dp"
             android:id="@+id/logo"
-            android:src="@drawable/logo"
+            android:src="@drawable/logo_no"
+            android:layout_marginTop="10dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_alignWithParentIfMissing="false"
-            android:background="#ffffff" />
+            android:background="#ffffff"
+            android:layout_alignWithParentIfMissing="false"/>
 
         <EditText
             android:layout_width="400dp"
@@ -83,15 +84,15 @@
             android:layout_height="wrap_content"
             android:text="注销"
             android:id="@+id/login_btn_cancle"
-            android:textSize="20dp"
-            android:layout_below="@+id/login_btn_register"
+            android:textSize="15dp"
             android:layout_marginTop="10dp"
+            android:background="@drawable/button_style_concel"
+            android:layout_below="@+id/login_btn_register"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:textColor="#ffffff"
-            android:background="#3a1313" />
+            android:textColor="#030303"/>
 
         <CheckBox
             android:layout_width="100dp"
@@ -114,6 +115,7 @@
             android:layout_alignParentEnd="true"
             android:textSize="15dp" />
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/login_success_view"
         android:layout_width="fill_parent"

@@ -68,8 +68,8 @@ public class Login extends Activity {                 //登录界面活动
         mCancleButton.setOnClickListener(mListener);
         mChangepwdText.setOnClickListener(mListener);
 
-        ImageView image = (ImageView) findViewById(R.id.logo);             //使用ImageView显示logo
-        image.setImageResource(R.drawable.logo);
+        ImageView image = findViewById(R.id.logo);             //使用ImageView显示logo
+        image.setImageResource(R.drawable.logo_no);
 
         if (mUserDataManager == null) {
             mUserDataManager = new UserDataManager(this);
@@ -127,6 +127,7 @@ public class Login extends Activity {                 //登录界面活动
             }
         }
     }
+
     public void cancel() {           //注销
         if (isUserNameAndPwdValid()) {
             String userName = mAccount.getText().toString().trim();    //获取当前输入的用户名和密码信息
@@ -143,6 +144,8 @@ public class Login extends Activity {                 //登录界面活动
         }
 
     }
+
+
     public boolean isUserNameAndPwdValid() {
         if (mAccount.getText().toString().trim().equals("")) {
             Toast.makeText(this, "account_empty",
