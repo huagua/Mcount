@@ -45,7 +45,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public Cursor getAllCostData(){
         SQLiteDatabase database = getWritableDatabase();
-        return database.query("daily_cost", null, null, null, null, null, "cost_time " + "DESC");
+        return database.query("daily_cost", null, null, null, null, null, "cost_date " + "DESC, "+"cost_time desc");
     }
 
     public Cursor getDateCostData(String date){
