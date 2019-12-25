@@ -20,7 +20,6 @@ public class Login extends Activity {                 //登录界面活动
     private EditText mPwd;                            //密码编辑
     private Button mRegisterButton;                   //注册按钮
     private Button mLoginButton;                      //登录按钮
-    private Button mCancleButton;                     //注销按钮
     private CheckBox mRememberCheck;
 
     private SharedPreferences login_sp;
@@ -42,7 +41,6 @@ public class Login extends Activity {                 //登录界面活动
         mPwd = (EditText) findViewById(R.id.login_edit_pwd);
         mRegisterButton = (Button) findViewById(R.id.login_btn_register);
         mLoginButton = (Button) findViewById(R.id.login_btn_login);
-        mCancleButton = (Button) findViewById(R.id.login_btn_cancle);
         loginView=findViewById(R.id.login_view);
         loginSuccessView=findViewById(R.id.login_success_view);
         loginSuccessShow=(TextView) findViewById(R.id.login_success_show);
@@ -65,7 +63,6 @@ public class Login extends Activity {                 //登录界面活动
 
         mRegisterButton.setOnClickListener(mListener);                      //采用OnClickListener方法设置不同按钮按下之后的监听事件
         mLoginButton.setOnClickListener(mListener);
-        mCancleButton.setOnClickListener(mListener);
         mChangepwdText.setOnClickListener(mListener);
 
         ImageView image = findViewById(R.id.logo);             //使用ImageView显示logo
@@ -86,9 +83,6 @@ public class Login extends Activity {                 //登录界面活动
                     break;
                 case R.id.login_btn_login:                              //登录界面的登录按钮
                     login();
-                    break;
-                case R.id.login_btn_cancle:                             //登录界面的注销按钮
-                    cancel();
                     break;
                 case R.id.login_text_change_pwd:                             //登录界面的注销按钮
                     Intent intent_Login_to_reset = new Intent(Login.this,Resetpwd.class) ;    //切换Login Activity至User Activity
@@ -127,24 +121,6 @@ public class Login extends Activity {                 //登录界面活动
             }
         }
     }
-
-    public void cancel() {           //注销
-        if (isUserNameAndPwdValid()) {
-            String userName = mAccount.getText().toString().trim();    //获取当前输入的用户名和密码信息
-            String userPwd = mPwd.getText().toString().trim();
-            int result=mUserDataManager.findUserByNameAndPwd(userName, userPwd);
-            if(result==1){                                             //返回1说明用户名和密码均正确
-                Toast.makeText(this, "cancel_success",Toast.LENGTH_SHORT).show();//登录成功提示
-                mPwd.setText("");
-                mAccount.setText("");
-                mUserDataManager.deleteUserDatabyname(userName);
-            }else if(result==0){
-                Toast.makeText(this, "cancel_fail",Toast.LENGTH_SHORT).show();  //登录失败提示
-            }
-        }
-
-    }
-
 
     public boolean isUserNameAndPwdValid() {
         if (mAccount.getText().toString().trim().equals("")) {
