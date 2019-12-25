@@ -38,7 +38,11 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ItemTouchHelper helper;
+
     private TextView total;
+    private TextView totalIn;
+    private TextView totalOut;
+
     private Button caidanButton;
     private DrawerLayout drawerLayout;
     private NavigationView navView;
@@ -46,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
     private Menu navMenu;
 
     private Double totalAccount = 0.0;
+    private Double totalInAccount = 0.0;
+    private Double totalOutAccount = 0.0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +160,29 @@ public class MainActivity extends AppCompatActivity {
                 else
                     total.setText(totalString);
 
+                //如果是支出
+                if(data.get(viewHolder.getAdapterPosition()).getCost().charAt(0) == '-'){
+                    totalOutAccount -= Double.parseDouble(data.get(viewHolder.getAdapterPosition()).getCost());
+                    totalOut = findViewById(R.id.total_out);
+                    String totalOutString = Double.toString(totalOutAccount);
+
+                    if((totalOutString.indexOf('.')+3)<(totalOutString.length()-1))
+                        totalOut.setText(totalOutString.substring(0,totalString.indexOf('.')+3));
+                    else
+                        totalOut.setText(totalOutString);
+                }else{//如果是收入
+                    totalInAccount -= Double.parseDouble(data.get(viewHolder.getAdapterPosition()).getCost());
+                    totalIn = findViewById(R.id.total_in);
+                    String totalInString = Double.toString(totalInAccount);
+
+                    if((totalInString.indexOf('.')+3)<(totalInString.length()-1))
+                        totalIn.setText(totalInString.substring(0,totalString.indexOf('.')+3));
+                    else
+                        totalIn.setText(totalInString);
+                }
+
+
+
                 data.remove(viewHolder.getAdapterPosition());
 
                 mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
@@ -178,7 +208,8 @@ public class MainActivity extends AppCompatActivity {
 
         //设置系统默认动画
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        
+
+
     }
 
     private ArrayList<DailyCost> getData() {
@@ -196,6 +227,9 @@ public class MainActivity extends AppCompatActivity {
     //搜索数据库
     public void queryMsql(){
         totalAccount = 0.0;
+        totalInAccount = 0.0;
+        totalOutAccount = 0.0;
+
         Cursor cursor = mDataBaseHelper.getAllCostData();
         if(cursor != null){
             while(cursor.moveToNext()){
@@ -206,7 +240,13 @@ public class MainActivity extends AppCompatActivity {
                 data.add(tmpDaily);
                 if(!tmpDaily.getCost().equals("")){
                     totalAccount += Double.parseDouble(tmpDaily.getCost());
+                    if(tmpDaily.getCost().charAt(0) == '-')
+                        totalOutAccount += Double.parseDouble(tmpDaily.getCost());
+                    else
+                        totalInAccount += Double.parseDouble(tmpDaily.getCost());
                 }
+
+
             }
         }
 
@@ -217,6 +257,26 @@ public class MainActivity extends AppCompatActivity {
             total.setText(totalString.substring(0,totalString.indexOf('.')+3));
         else
             total.setText(totalString);
+
+        //如果是支出
+            totalOut = findViewById(R.id.total_out);
+            String totalOutString = Double.toString(totalOutAccount);
+
+            if((totalOutString.indexOf('.')+3)<(totalOutString.length()-1))
+                totalOut.setText(totalOutString.substring(0,totalString.indexOf('.')+3));
+            else
+                totalOut.setText(totalOutString);
+
+            totalIn = findViewById(R.id.total_in);
+            String totalInString = Double.toString(totalInAccount);
+
+            if((totalInString.indexOf('.')+3)<(totalInString.length()-1))
+                totalIn.setText(totalInString.substring(0,totalString.indexOf('.')+3));
+            else
+                totalIn.setText(totalInString);
+
+
+
 
         cursor.close();
     }
