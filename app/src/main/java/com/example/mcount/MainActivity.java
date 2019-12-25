@@ -107,17 +107,41 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //获取到菜单
         navMenu = navView.getMenu();
-        navMenu.findItem(R.id.nav_login).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(MainActivity.this, Login.class);
-                startActivityForResult(intent, 2);
-                return true;
-            }
-        });
+
+        //设置item响应事件
+        navMenu.findItem(R.id.nav_login).setOnMenuItemClickListener(mListener);
+        navMenu.findItem(R.id.nav_register).setOnMenuItemClickListener(mListener);
+        navMenu.findItem(R.id.nav_logout).setOnMenuItemClickListener(mListener);
 
     }
+
+    //点击菜单中的不同item的不同的响应事件
+    MenuItem.OnMenuItemClickListener mListener = new MenuItem.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()){
+                case R.id.nav_login:
+                    Intent intent = new Intent(MainActivity.this, Login.class);
+                    startActivityForResult(intent, 2);
+                    return true;
+
+                case R.id.nav_register:
+                    Intent intent1 = new Intent(MainActivity.this, Register.class);
+                    startActivity(intent1);
+                    return true;
+
+                case R.id.nav_logout:
+                    Intent intent2 = new Intent(MainActivity.this, Register.class);
+                    startActivity(intent2);
+                    return true;
+
+            }
+            return false;
+
+        }
+    };
 
 
     //初始化数据
@@ -208,7 +232,6 @@ public class MainActivity extends AppCompatActivity {
         //设置系统默认动画
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-
     }
 
     private ArrayList<DailyCost> getData() {
@@ -274,8 +297,6 @@ public class MainActivity extends AppCompatActivity {
                 totalIn.setText(totalInString.substring(0,totalString.indexOf('.')+3));
             else
                 totalIn.setText(totalInString);
-
-
 
 
         cursor.close();

@@ -73,6 +73,7 @@ public class Login extends Activity {                 //登录界面活动
             mUserDataManager.openDataBase();                              //建立本地数据库
         }
     }
+
     OnClickListener mListener = new OnClickListener() {                  //不同按钮按下的监听事件选择
         public void onClick(View v) {
             switch (v.getId()) {

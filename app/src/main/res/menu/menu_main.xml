@@ -5,15 +5,24 @@
 
     <group>
         <item
-            android:id="@+id/nav_login"
-            android:title="login" />
+            android:id="@+id/nav_share"
+            android:title="share" />
+
     </group>
 
     <item android:title="user">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:title="share" />
+                android:id="@+id/nav_login"
+                android:title="login" />
+
+            <item
+                android:id="@+id/nav_register"
+                android:title="register" />
+
+            <item
+                android:id="@+id/nav_logout"
+                android:title="logout" />
         </menu>
     </item>
 
