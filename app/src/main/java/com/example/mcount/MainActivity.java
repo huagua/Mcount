@@ -148,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 //侧滑事件
                 mDataBaseHelper.deleteCost(data.get(viewHolder.getAdapterPosition()));
+                data.remove(viewHolder.getAdapterPosition());
 
                 //删除之后重新设置总花销金额
                 totalAccount -= Double.parseDouble(data.get(viewHolder.getAdapterPosition()).getCost());
@@ -182,8 +183,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-
-                data.remove(viewHolder.getAdapterPosition());
 
                 mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
             }
@@ -237,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
                 tmpDaily.setName(cursor.getString(cursor.getColumnIndex("cost_type")));
                 tmpDaily.setCost(cursor.getString(cursor.getColumnIndex("cost_money")));
                 tmpDaily.setDate(cursor.getString(cursor.getColumnIndex("cost_date")));
+                tmpDaily.setTime(cursor.getString(cursor.getColumnIndex("cost_time")));
                 data.add(tmpDaily);
                 if(!tmpDaily.getCost().equals("")){
                     totalAccount += Double.parseDouble(tmpDaily.getCost());

@@ -10,12 +10,15 @@ public class DailyCost {
     private int imageId;
     private String cost;
     private String date;
+    private String time;
 
-    public DailyCost(String name, int imageId, String cost,String date){
+    public DailyCost(String name, int imageId, String cost,String date,String time){
         this.name = name;
         this.imageId = imageId;
         this.cost = cost;
         this.date = date;
+        this.time = time;
+
     }
 
     public DailyCost(int imageId){
@@ -38,6 +41,10 @@ public class DailyCost {
         this.date = date;
     }
 
+    public void setTime(String time){
+        this.time = time;
+    }
+
     public String getName(){
         return name;
     }
@@ -53,4 +60,9 @@ public class DailyCost {
     public String getDate(){
         return date;
     }
+
+    public String getTime(){
+        return time;
+    }
+
 }

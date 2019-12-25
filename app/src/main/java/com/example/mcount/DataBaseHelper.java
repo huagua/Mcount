@@ -28,6 +28,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("create table if not exists daily_cost("+
                 "id integer primary key autoincrement, "+
                 "cost_date text, "+
+                "cost_time text, "+
                 "cost_type text, "+
                 "cost_money text)");
     }
@@ -38,12 +39,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         cv.put("cost_type", dailyCost.getName());
         cv.put("cost_money", dailyCost.getCost());
         cv.put("cost_date", dailyCost.getDate());
+        cv.put("cost_time", dailyCost.getTime());
         database.insert("daily_cost",null, cv);
     }
 
     public Cursor getAllCostData(){
         SQLiteDatabase database = getWritableDatabase();
-        return database.query("daily_cost", null, null, null, null, null, "cost_date " + "DESC");
+        return database.query("daily_cost", null, null, null, null, null, "cost_time " + "DESC");
+    }
+
+    public Cursor getDateCostData(String date){
+        SQLiteDatabase database = getWritableDatabase();
+        String[] tmp = new String[1];
+        tmp[0] = date;
+        return database.query("daily_cost",null , "cost_date",  tmp, null, null, "cost_time " + "DESC");
     }
 
     public void deleteAllData(){
@@ -54,11 +63,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     //删除一条记录
     public void deleteCost(DailyCost dailyCost){
         SQLiteDatabase database = getWritableDatabase();
-        String[] tmp = new String[3];
+        String[] tmp = new String[4];
         tmp[0] = dailyCost.getName();
         tmp[1] = dailyCost.getCost();
         tmp[2] = dailyCost.getDate();
-        database.delete("daily_cost","cost_type=? and cost_money=? and cost_date=?",tmp);
+        tmp[3] = dailyCost.getTime();
+        database.delete("daily_cost","cost_type=? and cost_money=? and cost_date=? and cost_time=?",tmp);
     }
 
     @Override

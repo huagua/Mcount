@@ -39,6 +39,7 @@ public class PlaceholderFragment extends Fragment {
     private DataBaseHelper mDataBase;
 
     private String tmpDate = "";
+    private String tmpTime = "";
 
     public static PlaceholderFragment newInstance(int index) {
         PlaceholderFragment fragment = new PlaceholderFragment();
@@ -77,6 +78,7 @@ public class PlaceholderFragment extends Fragment {
         final EditText inputType = root.findViewById(R.id.type);
 
         final TextView dateAndTime = root.findViewById(R.id.text_date_time);
+
         //提供一个初始值给日期
         initTmpDate();
         dateAndTime.setText(tmpDate);
@@ -183,8 +185,12 @@ public class PlaceholderFragment extends Fragment {
                     dailyCost.setName(inputType.getText().toString());
 
                     tmpDate = dateAndTime.getText().toString();
+                    tmpDate = tmpDate.substring(0,tmpDate.indexOf(' '));
+                    tmpTime = dateAndTime.getText().toString();
+                    tmpTime = tmpTime.substring(tmpTime.indexOf(' '));
 
                     dailyCost.setDate(tmpDate);
+                    dailyCost.setTime(tmpTime);
 
                     //将该条账单插入数据库中
                     mDataBase.insertCost(dailyCost);
