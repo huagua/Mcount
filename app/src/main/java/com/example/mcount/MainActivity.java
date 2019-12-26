@@ -34,9 +34,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-//import static android.app.Activity.RESULT_OK;
-
-
 /*
 * 主页面：显示账单列表
 * */
@@ -65,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
     private Double totalInAccount = 0.0;
     private Double totalOutAccount = 0.0;
 
+    private FloatingActionButton fab;
+    private View navHeader;
+
     private Bitmap head;// 头像Bitmap
     private static String path = "/sdcard/myHead/";// sd路径
     private Uri imageUri;
@@ -73,12 +73,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mDataBaseHelper = new DataBaseHelper(this);
-
-        //获取drawerLayout和navigationView的实例
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navView = findViewById(R.id.nav_view);
+        //mDataBaseHelper.deleteAllData();
 
         if(Build.VERSION.SDK_INT>=23){  //版本号判断（以下功能只在21及以上版本实现）
             View decorView = getWindow().getDecorView();
@@ -87,60 +82,85 @@ public class MainActivity extends AppCompatActivity {
             //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//将状态栏字体设为黑色，该功能在23及以上版本实现
         }
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, WriteDown.class);
-                startActivityForResult(intent,1);
-            }
-        });
+        initData();//初始化数据
+        initView();//初始化页面
+        clickListenerSet();//设置响应事件
+    }
 
-        //点击按钮打开侧滑菜单
-        caidanButton = findViewById(R.id.caidan_button);
-        caidanButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                if(!drawerLayout.isDrawerOpen(navView)){
-                    drawerLayout.openDrawer(navView);
-                }
-            }
-        });
+    //初始化数据
+    private void initData() {
+        mDataBaseHelper = new DataBaseHelper(this);
 
-        initData();
-        initView();
+        //获取drawerLayout和navigationView的实例
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navView = findViewById(R.id.nav_view);
+
+        fab = findViewById(R.id.fab);          //添加一条记录按钮
+        caidanButton = findViewById(R.id.caidan_button);            //打开侧滑菜单按钮
 
         //获取navView的header对象，实现点击头像跳转页面
-        View navHeader = navView.getHeaderView(0);
+        navHeader = navView.getHeaderView(0);
         userHead = navHeader.findViewById(R.id.user_img);
 
-        userHead.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                showTypeDialog();
-            }
-        });
-
-        //获取到菜单
+        //获取菜单
         navMenu = navView.getMenu();
+
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mAdapter = new MyAdapter(getData());
+
+        deleteAndMoveList();
+    }
+
+    //初始化账单列表
+    private void initView() {
+        mRecyclerView =findViewById(R.id.cost_view);
+        // 设置布局管理器
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        // 设置adapter
+        mRecyclerView.setAdapter(mAdapter);
+
+        helper.attachToRecyclerView(mRecyclerView);
+
+        //设置系统默认动画
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+    }
+
+    public void clickListenerSet(){
+        //设置响应事件
+        fab.setOnClickListener(mButtonListener);
+        caidanButton.setOnClickListener(mButtonListener);
+        userHead.setOnClickListener(mButtonListener);
 
         //设置item响应事件
         navMenu.findItem(R.id.nav_login).setOnMenuItemClickListener(mListener);
         navMenu.findItem(R.id.nav_register).setOnMenuItemClickListener(mListener);
         navMenu.findItem(R.id.nav_logout).setOnMenuItemClickListener(mListener);
         navMenu.findItem(R.id.nav_charts).setOnMenuItemClickListener(mListener);
-
-
-        /*
-        想解决打开相机闪退问题，但是没能解决
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-            StrictMode.setVmPolicy(builder.build());
-        }
-
-         */
-
     }
+
+    //button响应事件
+    View.OnClickListener mButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.fab:
+                    Intent intent = new Intent(MainActivity.this, WriteDown.class);
+                    startActivityForResult(intent,1);
+                    break;
+
+                case R.id.caidan_button:
+                    if(!drawerLayout.isDrawerOpen(navView)){
+                        drawerLayout.openDrawer(navView);
+                    }
+                    break;
+
+                case R.id.user_img:
+                    showTypeDialog();
+                    break;
+            }
+        }
+    };
 
     //点击菜单中的不同item的不同的响应事件
     MenuItem.OnMenuItemClickListener mListener = new MenuItem.OnMenuItemClickListener() {
@@ -151,35 +171,24 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, Login.class);
                     startActivity(intent);
                     return true;
-
                 case R.id.nav_register:
                     Intent intent1 = new Intent(MainActivity.this, Register.class);
                     startActivity(intent1);
                     return true;
-
                 case R.id.nav_logout:
                     Intent intent2 = new Intent(MainActivity.this, Register.class);
                     startActivity(intent2);
                     return true;
-
                 case R.id.nav_charts:
                     Intent intent3 = new Intent(MainActivity.this, Charts.class);
                     startActivity(intent3);
                     return true;
-
             }
             return false;
-
         }
     };
 
-
-    //初始化数据
-    private void initData() {
-        //mDataBaseHelper.deleteAllData();
-        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mAdapter = new MyAdapter(getData());
-
+    public void deleteAndMoveList(){
         //实现侧滑删除
         helper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
             @Override
@@ -247,33 +256,28 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //初始化账单列表
-    private void initView() {
-        mRecyclerView =findViewById(R.id.cost_view);
-        // 设置布局管理器
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        // 设置adapter
-        mRecyclerView.setAdapter(mAdapter);
-
-        helper.attachToRecyclerView(mRecyclerView);
-
-        //设置系统默认动画
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-    }
-
+    //获取数据
     private ArrayList<DailyCost> getData() {
+        data.clear();
         updateTotal();
         return data;
     }
 
     //增加一条记录后进行刷新
     public void updateAfterAddOne(){
-        data.clear();       //清除原data中的内容
         updateTotal();        //从sql中重新请求数据
         mAdapter.notifyDataSetChanged();        //更新recyclerView
     }
 
+    //清除主页面的内容
+    public void clearAll(){
+        data.clear();       //清除原data中的内容
+        totalAccount = 0.0;
+        totalInAccount = 0.0;
+        totalOutAccount = 0.0;
+    }
+
+    //查找数据库
     public void queryMysql(){
         Cursor cursor = mDataBaseHelper.getAllCostData();
         if(cursor != null){
@@ -298,11 +302,8 @@ public class MainActivity extends AppCompatActivity {
 
     //搜索数据库
     public void updateTotal(){
-        totalAccount = 0.0;
-        totalInAccount = 0.0;
-        totalOutAccount = 0.0;
-
-        queryMysql();
+        clearAll();     //清除所有数据
+        queryMysql();   //重新查找数据库
 
         total = findViewById(R.id.test_content);
         String totalString = Double.toString(totalAccount);
@@ -328,13 +329,14 @@ public class MainActivity extends AppCompatActivity {
                 totalIn.setText(totalInString.substring(0,totalString.indexOf('.')+3));
             else
                 totalIn.setText(totalInString);
-
     }
 
-    //从编辑页面传送信息到主页面，如果resultCode为2就刷新列表
+    //页面信息相互传递
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intentdata){
         super.onActivityResult(requestCode, resultCode, intentdata);
+
+        //从编辑页面传送信息到主页面，如果resultCode为2就刷新列表
         if(requestCode == 1 && resultCode == 2){
             updateAfterAddOne();
         }else if(requestCode == 2 && resultCode == RESULT_OK){
@@ -356,6 +358,7 @@ public class MainActivity extends AppCompatActivity {
             cropPhoto(intentdata.getData());// 裁剪图片
         }
     }
+
 
     public  void showTypeDialog() {
         //显示对话框
@@ -389,12 +392,6 @@ public class MainActivity extends AppCompatActivity {
         dialog.setView(view);
         dialog.show();
     }
-
-    /**
-     * 调用系统的裁剪功能
-     *
-     * @param uri
-     */
 
     public void cropPhoto(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
