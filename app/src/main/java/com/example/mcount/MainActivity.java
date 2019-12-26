@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //mDataBaseHelper.deleteAllData();
 
         if(Build.VERSION.SDK_INT>=23){  //版本号判断（以下功能只在21及以上版本实现）
             View decorView = getWindow().getDecorView();

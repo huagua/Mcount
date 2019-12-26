@@ -256,6 +256,5 @@ public class PlaceholderFragment extends Fragment {
         }
 
         tmpDate+=monthS+"-"+dayS+"  "+hourS+":"+minuteS;
-
     }
 }
