@@ -9,9 +9,10 @@
         android:roundIcon="@mipmap/logo_no_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Login"></activity>
-        <activity android:name=".Register"></activity>
-        <activity android:name=".Resetpwd"></activity>
+        <activity android:name=".Charts"></activity>
+        <activity android:name=".Login" />
+        <activity android:name=".Register" />
+        <activity android:name=".Resetpwd" />
         <activity
             android:name=".WriteDown"
             android:label="@string/title_activity_write_down"

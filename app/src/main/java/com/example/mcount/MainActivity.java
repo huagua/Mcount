@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static android.app.Activity.RESULT_OK;
+//import static android.app.Activity.RESULT_OK;
 
 
 /*
@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         navMenu.findItem(R.id.nav_login).setOnMenuItemClickListener(mListener);
         navMenu.findItem(R.id.nav_register).setOnMenuItemClickListener(mListener);
         navMenu.findItem(R.id.nav_logout).setOnMenuItemClickListener(mListener);
+        navMenu.findItem(R.id.nav_charts).setOnMenuItemClickListener(mListener);
 
 
         /*
@@ -159,6 +160,11 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.nav_logout:
                     Intent intent2 = new Intent(MainActivity.this, Register.class);
                     startActivity(intent2);
+                    return true;
+
+                case R.id.nav_charts:
+                    Intent intent3 = new Intent(MainActivity.this, Charts.class);
+                    startActivity(intent3);
                     return true;
 
             }
@@ -257,23 +263,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ArrayList<DailyCost> getData() {
-        queryMsql();
+        updateTotal();
         return data;
     }
 
     //增加一条记录后进行刷新
     public void updateAfterAddOne(){
         data.clear();       //清除原data中的内容
-        queryMsql();        //从sql中重新请求数据
+        updateTotal();        //从sql中重新请求数据
         mAdapter.notifyDataSetChanged();        //更新recyclerView
     }
 
-    //搜索数据库
-    public void queryMsql(){
-        totalAccount = 0.0;
-        totalInAccount = 0.0;
-        totalOutAccount = 0.0;
-
+    public void queryMysql(){
         Cursor cursor = mDataBaseHelper.getAllCostData();
         if(cursor != null){
             while(cursor.moveToNext()){
@@ -290,10 +291,18 @@ public class MainActivity extends AppCompatActivity {
                     else
                         totalInAccount += Double.parseDouble(tmpDaily.getCost());
                 }
-
-
             }
         }
+        cursor.close();
+    }
+
+    //搜索数据库
+    public void updateTotal(){
+        totalAccount = 0.0;
+        totalInAccount = 0.0;
+        totalOutAccount = 0.0;
+
+        queryMysql();
 
         total = findViewById(R.id.test_content);
         String totalString = Double.toString(totalAccount);
@@ -320,8 +329,6 @@ public class MainActivity extends AppCompatActivity {
             else
                 totalIn.setText(totalInString);
 
-
-        cursor.close();
     }
 
     //从编辑页面传送信息到主页面，如果resultCode为2就刷新列表
