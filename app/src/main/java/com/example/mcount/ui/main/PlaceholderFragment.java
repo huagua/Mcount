@@ -185,9 +185,10 @@ public class PlaceholderFragment extends Fragment {
                     dailyCost.setName(inputType.getText().toString());
 
                     tmpDate = dateAndTime.getText().toString();
-                    tmpDate = tmpDate.substring(0,tmpDate.indexOf(' '));
+                    tmpDate = tmpDate.substring(0,5);
+
                     tmpTime = dateAndTime.getText().toString();
-                    tmpTime = tmpTime.substring(tmpTime.indexOf(' ')+1);
+                    tmpTime = tmpTime.substring(6);
 
                     dailyCost.setDate(tmpDate);
                     dailyCost.setTime(tmpTime);
