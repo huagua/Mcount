@@ -37,74 +37,8 @@
                 android:layout_gravity="bottom"
                 android:gravity="center_vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="15dp">
+                android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginRight="5dp"
-                        android:padding="5dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:background="@drawable/total_style">
-
-                        <TextView
-                            android:text="总收入: "
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="#ffffff"
-                            android:gravity="end"/>
-
-                        <TextView
-                            android:id="@+id/total_in"
-                            android:hint="0.0"
-                            android:textColor="#ffffff"
-                            android:layout_marginLeft="5dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="start"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="30dp"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/total_style">
-
-                        <TextView
-                            android:text="总支出: "
-                            android:gravity="end"
-                            android:textColor="#ffffff"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                        <TextView
-                            android:id="@+id/total_out"
-                            android:layout_marginLeft="5dp"
-                            android:hint="0.0"
-                            android:textColor="#ffffff"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="start"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -114,11 +48,23 @@
                     android:text=">> 账单明细"
                     android:padding="5dp" />
 
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:padding="10dp"
+                    app:contentPadding="5dp"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="25dp">
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/cost_view"
                         android:scrollbars="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
+
+                </androidx.cardview.widget.CardView>
+
 
             </LinearLayout>
 

@@ -123,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
         //设置系统默认动画
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        //mRecyclerView.addItemDecoration();
+
     }
 
     public void clickListenerSet(){

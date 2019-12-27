@@ -141,7 +141,7 @@ public class PlaceholderFragment extends Fragment {
                     }
                 });
 
-                builder.setNegativeButton("取  消",new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("取  消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -153,8 +153,6 @@ public class PlaceholderFragment extends Fragment {
                 dialog.show();
             }
         });
-
-
 
 
         fabConfirm.setOnClickListener(new View.OnClickListener() {
