@@ -13,7 +13,6 @@ import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -52,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView totalIn;
     private TextView totalOut;
 
-    private Button caidanButton;
     private DrawerLayout drawerLayout;
     private NavigationView navView;
     private ImageView userHead;
@@ -95,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
         navView = findViewById(R.id.nav_view);
 
         fab = findViewById(R.id.fab);          //添加一条记录按钮
-        caidanButton = findViewById(R.id.caidan_button);            //打开侧滑菜单按钮
 
         //获取navView的header对象，实现点击头像跳转页面
         navHeader = navView.getHeaderView(0);
@@ -130,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
     public void clickListenerSet(){
         //设置响应事件
         fab.setOnClickListener(mButtonListener);
-        caidanButton.setOnClickListener(mButtonListener);
+        //caidanButton.setOnClickListener(mButtonListener);
         userHead.setOnClickListener(mButtonListener);
 
         //设置item响应事件
@@ -148,12 +145,6 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.fab:
                     Intent intent = new Intent(MainActivity.this, WriteDown.class);
                     startActivityForResult(intent,1);
-                    break;
-
-                case R.id.caidan_button:
-                    if(!drawerLayout.isDrawerOpen(navView)){
-                        drawerLayout.openDrawer(navView);
-                    }
                     break;
 
                 case R.id.user_img:
