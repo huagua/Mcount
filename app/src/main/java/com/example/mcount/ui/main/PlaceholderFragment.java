@@ -40,6 +40,7 @@ public class PlaceholderFragment extends Fragment {
 
     private String tmpDate = "";
     private String tmpTime = "";
+    private String tmpYear = "";
 
     public static PlaceholderFragment newInstance(int index) {
         PlaceholderFragment fragment = new PlaceholderFragment();
@@ -104,6 +105,8 @@ public class PlaceholderFragment extends Fragment {
 
                         if(Build.VERSION.SDK_INT>=21){
 
+                            String year = ""+datePicker.getYear();
+
                             String minute = "";
                             if(timePicker.getMinute() < 10){
                                 minute+="0"+timePicker.getMinute();
@@ -132,7 +135,7 @@ public class PlaceholderFragment extends Fragment {
                                 hour += timePicker.getHour();
                             }
 
-                            tmpDate+=month+"-"+date+"  "+hour+":"+minute;
+                            tmpDate+=year+" "+month+"-"+date+" "+hour+":"+minute;
                         }
 
                         dateAndTime.setText(tmpDate);
@@ -182,12 +185,16 @@ public class PlaceholderFragment extends Fragment {
 
                     dailyCost.setName(inputType.getText().toString());
 
+                    tmpYear = dateAndTime.getText().toString();
+                    tmpYear = tmpYear.substring(0,4);
+
                     tmpDate = dateAndTime.getText().toString();
-                    tmpDate = tmpDate.substring(0,5);
+                    tmpDate = tmpDate.substring(5,10);
 
                     tmpTime = dateAndTime.getText().toString();
-                    tmpTime = tmpTime.substring(6);
+                    tmpTime = tmpTime.substring(11);
 
+                    dailyCost.setYear(tmpYear);
                     dailyCost.setDate(tmpDate);
                     dailyCost.setTime(tmpTime);
 
@@ -215,6 +222,8 @@ public class PlaceholderFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
 
         //获取系统的日期
+        //年
+        int year = calendar.get(Calendar.YEAR);
         //月
         int month = calendar.get(Calendar.MONTH)+1;
         //日
@@ -254,6 +263,6 @@ public class PlaceholderFragment extends Fragment {
             hourS += hour;
         }
 
-        tmpDate+=monthS+"-"+dayS+"  "+hourS+":"+minuteS;
+        tmpDate+=year+" "+monthS+"-"+dayS+"  "+hourS+":"+minuteS;
     }
 }

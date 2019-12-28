@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -49,9 +50,10 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<DailyCost> dataYear = new ArrayList<>();  //本年全部数据
 
     private DataBaseHelper mDataBaseHelper;
+    private HorizontalScrollView mHorizontalScrollView;
     Calendar calendar = Calendar.getInstance();
 
-    private final int VIEW_NUM = 2;
+    private final int VIEW_NUM = 5;
 
     private LinearLayout linearLayout[] = new LinearLayout[VIEW_NUM];
 
@@ -95,7 +97,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         linearLayout[0] = findViewById(R.id.today_layout);
-        linearLayout[1] = findViewById(R.id.all_layout);
+        linearLayout[1] = findViewById(R.id.week_layout);
+        linearLayout[2] = findViewById(R.id.month_layout);
+        linearLayout[3] = findViewById(R.id.year_layout);
+        linearLayout[4] = findViewById(R.id.all_layout);
+
 
         //获取手机的宽度
         WindowManager manager = getWindowManager();
@@ -105,6 +111,10 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0; i < VIEW_NUM; i++){
             linearLayout[i].setMinimumWidth(metrics.widthPixels);
         }
+
+        mHorizontalScrollView = findViewById(R.id.account_show);
+
+        mHorizontalScrollView.setSmoothScrollingEnabled(true);
 
         initData();//初始化数据
         initView();//初始化页面
@@ -131,7 +141,10 @@ public class MainActivity extends AppCompatActivity {
         updateTotal();
 
         mAdapter[0] = new MyAdapter(dataDate);
-        mAdapter[1] = new MyAdapter(dataAll);
+        mAdapter[1] = new MyAdapter(dataWeek);
+        mAdapter[2] = new MyAdapter(dataMonth);
+        mAdapter[3] = new MyAdapter(dataYear);
+        mAdapter[4] = new MyAdapter(dataAll);
 
         //deleteAndMoveList();
     }
@@ -139,7 +152,10 @@ public class MainActivity extends AppCompatActivity {
     //初始化账单列表
     private void initView() {
         mRecyclerView[0] = findViewById(R.id.cost_view_date);
-        mRecyclerView[1] = findViewById(R.id.cost_view);
+        mRecyclerView[1] = findViewById(R.id.cost_view_week);
+        mRecyclerView[2] = findViewById(R.id.cost_view_month);
+        mRecyclerView[3] = findViewById(R.id.cost_view_year);
+        mRecyclerView[4] = findViewById(R.id.cost_view);
 
         for(int i = 0; i < VIEW_NUM; i++){
             //这个得在前面哈哈哈哈哈
@@ -162,6 +178,9 @@ public class MainActivity extends AppCompatActivity {
         updateTotal();        //从sql中重新请求数据
         mAdapter[0].notifyDataSetChanged();        //更新recyclerView
         mAdapter[1].notifyDataSetChanged();        //更新recyclerView
+        mAdapter[2].notifyDataSetChanged();        //更新recyclerView
+        mAdapter[3].notifyDataSetChanged();        //更新recyclerView
+        mAdapter[4].notifyDataSetChanged();        //更新recyclerView
     }
 
     //搜索数据库
@@ -197,8 +216,12 @@ public class MainActivity extends AppCompatActivity {
 
     //清除主页面的内容
     public void clearAll(){
-        dataAll.clear();       //清除原data中的内容
+        //清除原data中的内容
+        dataAll.clear();
         dataDate.clear();
+        dataWeek.clear();
+        dataMonth.clear();
+        dataYear.clear();
         totalAccount = 0.0;
         totalInAccount = 0.0;
         totalOutAccount = 0.0;
@@ -214,11 +237,50 @@ public class MainActivity extends AppCompatActivity {
                 tmpDaily.setCost(cursor.getString(cursor.getColumnIndex("cost_money")));
                 tmpDaily.setDate(cursor.getString(cursor.getColumnIndex("cost_date")));
                 tmpDaily.setTime(cursor.getString(cursor.getColumnIndex("cost_time")));
+                tmpDaily.setYear(cursor.getString(cursor.getColumnIndex("cost_year")));
                 dataAll.add(tmpDaily);
 
+                int dayInWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                int dayInMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                int year = calendar.get(Calendar.YEAR);
+                int monthInYear = calendar.get(Calendar.MONTH);
 
-                if(tmpDaily.getDate().substring(0,2).contains(""+(calendar.get(Calendar.MONTH)+1)) && tmpDaily.getDate().substring(3).contains(""+calendar.get(Calendar.DAY_OF_MONTH))){
-                    dataDate.add(tmpDaily);
+                if(tmpDaily.getDate().substring(0,2).contains(""+(monthInYear+1))){
+                    dataMonth.add(tmpDaily);
+                    if(tmpDaily.getDate().substring(3).contains(""+dayInMonth)){
+                        dataDate.add(tmpDaily);
+                    }
+                }
+
+
+                Calendar c = Calendar.getInstance();
+                if(monthInYear > 0){
+                    c.set(calendar.get(Calendar.YEAR), monthInYear, 0); //输入类型为int类型
+                }
+                int days = c.get(Calendar.DAY_OF_MONTH);
+                int daysInTwelve = 31;
+
+                if(tmpDaily.getYear().equals(""+year)){
+                    dataYear.add(tmpDaily);
+                }
+
+                for(int i = 0; i < dayInWeek; i++){
+                    if(dayInMonth-i > 0){
+                        if(tmpDaily.getDate().substring(0,2).contains(""+(monthInYear+1)) && tmpDaily.getDate().substring(3).contains(""+(dayInMonth-i))){
+                            dataWeek.add(tmpDaily);
+                            break;
+                        }
+                    }else if(monthInYear > 0){
+                        if(tmpDaily.getDate().substring(0,2).contains(""+(monthInYear)) && tmpDaily.getDate().substring(3).contains(""+(days--))){
+                            dataWeek.add(tmpDaily);
+                            break;
+                        }
+                    }else{
+                        if(tmpDaily.getYear().equals(""+(monthInYear-1)) && tmpDaily.getDate().substring(0,2).contains(""+12) && tmpDaily.getDate().substring(3).contains(""+(daysInTwelve--))){
+                            dataWeek.add(tmpDaily);
+                            break;
+                        }
+                    }
                 }
 
                 if(!tmpDaily.getCost().equals("")){

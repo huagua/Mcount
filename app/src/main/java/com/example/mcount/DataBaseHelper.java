@@ -27,6 +27,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db){
         db.execSQL("create table if not exists daily_cost("+
                 "id integer primary key autoincrement, "+
+                "cost_year text, "+
                 "cost_date text, "+
                 "cost_time text, "+
                 "cost_type text, "+
@@ -37,6 +38,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase database = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("cost_type", dailyCost.getName());
+        cv.put("cost_year", dailyCost.getYear());
         cv.put("cost_money", dailyCost.getCost());
         cv.put("cost_date", dailyCost.getDate());
         cv.put("cost_time", dailyCost.getTime());
@@ -45,43 +47,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public Cursor getAllCostData(){
         SQLiteDatabase database = getWritableDatabase();
-        return database.query("daily_cost", null, null, null, null, null, "cost_date " + "DESC, "+"cost_time desc");
+        return database.query("daily_cost", null, null, null, null, null, "cost_year " + "DESC, "+"cost_date desc, "+"cost_time desc");
     }
-
-    //获取某一天的记录
-    public Cursor getDateCostData(String date){
-        SQLiteDatabase database = getWritableDatabase();
-        String[] tmp = new String[1];
-        tmp[0] = date;
-        return database.query("daily_cost",null , "cost_date",  tmp, null, null, "cost_time " + "DESC");
-    }
-
-    //获取从周一到今日的记录
-    public Cursor getWeekCostData(String date){
-        SQLiteDatabase database = getWritableDatabase();
-        String[] tmp = new String[1];
-        tmp[0] = date;
-        return database.query("daily_cost",null , "cost_date",  tmp, null, null, "cost_time " + "DESC");
-    }
-
-    //获取从该月1号到今日的记录
-    public Cursor getMonthCostData(String date){
-        SQLiteDatabase database = getWritableDatabase();
-        String[] tmp = new String[1];
-        tmp[0] = date;
-
-        return database.query("daily_cost",null , "cost_date",  tmp, null, null, "cost_time " + "DESC");
-    }
-
-    //获取从该年1月1号到今日的记录
-    public Cursor getYearCostData(String date,int dayOfWeek){
-        SQLiteDatabase database = getWritableDatabase();
-        String[] tmp = new String[1];
-        tmp[0] = date;
-
-        return database.query("daily_cost",null , "cost_date",  tmp, null, null, "cost_time " + "DESC");
-    }
-
 
     public void deleteAllData(){
         SQLiteDatabase database = getWritableDatabase();
