@@ -1,5 +1,10 @@
 package com.example.mcount;
 
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +15,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.List;
 
 //RecyclerView的适配器
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     private List<DailyCost> mDailyCost;
+    private DataBaseHelper mDataBaseHelper;
 
     //静态内部类
     static class ViewHolder extends RecyclerView.ViewHolder{
@@ -41,6 +48,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cost_item,parent, false);
         final ViewHolder holder = new ViewHolder(view);
+        mDataBaseHelper = new DataBaseHelper(view.getContext());
 
         //设置点击监听事件
         holder.costView.setOnClickListener(new View.OnClickListener() {
@@ -48,7 +56,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 DailyCost cost = mDailyCost.get(position);
-                Toast.makeText(v.getContext(),"你点击了View"+cost.getName(), Toast.LENGTH_SHORT).show();
+                setView(cost, v,position);
+
+
+                //Toast.makeText(v.getContext(),"你点击了View"+cost.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -71,6 +82,27 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
         });
 
         return holder;
+    }
+
+    public void setView(final DailyCost cost, View v, final int position){
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+        final AlertDialog dialog = builder.create();
+        View view = View.inflate(v.getContext(), R.layout.dialog_check_account, null);
+        TextView delete_account =  view.findViewById(R.id.delete_account);
+
+        delete_account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDataBaseHelper.deleteCost(cost);
+                mDailyCost.remove(cost);
+                notifyItemRemoved(position);
+
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setView(view);
+        dialog.show();
     }
 
     //动态更新值

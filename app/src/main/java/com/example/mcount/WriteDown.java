@@ -50,6 +50,12 @@ public class WriteDown extends AppCompatActivity {
             }
         });
 
+        /*
+        Intent intent = getIntent();
+        String type = intent.getStringExtra("type");
+
+         */
+
     }
 
     public void showToast(int code){

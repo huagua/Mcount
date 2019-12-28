@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapter[3] = new MyAdapter(dataYear);
         mAdapter[4] = new MyAdapter(dataAll);
 
+
         //deleteAndMoveList();
     }
 
