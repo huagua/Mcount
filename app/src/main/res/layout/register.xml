@@ -32,6 +32,7 @@
         android:id="@+id/resetpwd_edit_name"
         android:layout_below="@+id/logo2"
         android:hint="请输入您的用户名"
+        android:textSize="17dp"
         android:layout_alignLeft="@+id/resetpwd_edit_pwd_new"
         android:layout_alignStart="@+id/resetpwd_edit_pwd_new"
         android:layout_alignRight="@+id/resetpwd_edit_pwd_new"
@@ -55,6 +56,7 @@
         android:ems="10"
         android:id="@+id/resetpwd_edit_pwd_old"
         android:hint="请输入您的密码"
+        android:textSize="17dp"
         android:layout_below="@+id/resetpwd_edit_name"
         android:layout_alignRight="@+id/resetpwd_edit_name"
         android:layout_alignEnd="@+id/resetpwd_edit_name"
@@ -66,7 +68,7 @@
         android:layout_height="wrap_content"
         android:text="取消"
         android:id="@+id/register_btn_cancel"
-        android:textSize="20dp"
+        android:textSize="17dp"
         android:textColor="#ffffff"
         android:background="@drawable/button_style_concel"
         android:layout_below="@+id/register_btn_sure"
@@ -83,6 +85,7 @@
         android:id="@+id/resetpwd_edit_pwd_new"
         android:layout_below="@+id/resetpwd_edit_pwd_old"
         android:layout_centerHorizontal="true"
+        android:textSize="17dp"
         android:hint="请确认您的密码" />
 
     <Button
@@ -91,7 +94,7 @@
         android:text="确定"
         android:textColor="#ffffff"
         android:id="@+id/register_btn_sure"
-        android:textSize="20dp"
+        android:textSize="17dp"
         android:background="@drawable/button_style_confirm"
         android:layout_below="@+id/resetpwd_edit_pwd_new"
         android:layout_alignLeft="@+id/resetpwd_edit_pwd_new"

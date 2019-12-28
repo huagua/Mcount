@@ -13,9 +13,9 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="25dp"
-        app:cardCornerRadius="5dp"
-        app:cardElevation="10dp"
+        android:layout_margin="30dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -49,6 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
+                    android:textColor="@color/colorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -77,6 +78,7 @@
 
                     <TextView
                         android:text="总收入: "
+                        android:textSize="13sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="#ffffff"
@@ -85,6 +87,7 @@
                     <TextView
                         android:id="@+id/total_in"
                         android:hint="0.0"
+                        android:textSize="13sp"
                         android:textColor="#ffffff"
                         android:layout_marginLeft="5dp"
                         android:layout_width="wrap_content"
@@ -107,6 +110,7 @@
                     <TextView
                         android:text="总支出: "
                         android:gravity="end"
+                        android:textSize="13sp"
                         android:textColor="#ffffff"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
@@ -115,6 +119,7 @@
                         android:id="@+id/total_out"
                         android:layout_marginLeft="5dp"
                         android:hint="0.0"
+                        android:textSize="13sp"
                         android:textColor="#ffffff"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

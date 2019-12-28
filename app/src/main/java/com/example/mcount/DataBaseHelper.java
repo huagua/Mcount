@@ -48,12 +48,40 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return database.query("daily_cost", null, null, null, null, null, "cost_date " + "DESC, "+"cost_time desc");
     }
 
+    //获取某一天的记录
     public Cursor getDateCostData(String date){
         SQLiteDatabase database = getWritableDatabase();
         String[] tmp = new String[1];
         tmp[0] = date;
         return database.query("daily_cost",null , "cost_date",  tmp, null, null, "cost_time " + "DESC");
     }
+
+    //获取从周一到今日的记录
+    public Cursor getWeekCostData(String date){
+        SQLiteDatabase database = getWritableDatabase();
+        String[] tmp = new String[1];
+        tmp[0] = date;
+        return database.query("daily_cost",null , "cost_date",  tmp, null, null, "cost_time " + "DESC");
+    }
+
+    //获取从该月1号到今日的记录
+    public Cursor getMonthCostData(String date){
+        SQLiteDatabase database = getWritableDatabase();
+        String[] tmp = new String[1];
+        tmp[0] = date;
+
+        return database.query("daily_cost",null , "cost_date",  tmp, null, null, "cost_time " + "DESC");
+    }
+
+    //获取从该年1月1号到今日的记录
+    public Cursor getYearCostData(String date,int dayOfWeek){
+        SQLiteDatabase database = getWritableDatabase();
+        String[] tmp = new String[1];
+        tmp[0] = date;
+
+        return database.query("daily_cost",null , "cost_date",  tmp, null, null, "cost_time " + "DESC");
+    }
+
 
     public void deleteAllData(){
         SQLiteDatabase database = getWritableDatabase();

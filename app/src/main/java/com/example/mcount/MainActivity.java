@@ -10,10 +10,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 
 /*
@@ -38,14 +42,24 @@ import java.util.Collections;
 * */
 
 public class MainActivity extends AppCompatActivity {
-    ArrayList<DailyCost> data = new ArrayList<>();
+    ArrayList<DailyCost> dataAll = new ArrayList<>();  //全部数据
+    ArrayList<DailyCost> dataDate = new ArrayList<>();  //今日全部数据
+    ArrayList<DailyCost> dataWeek = new ArrayList<>();  //本周全部数据
+    ArrayList<DailyCost> dataMonth = new ArrayList<>();  //本月全部数据
+    ArrayList<DailyCost> dataYear = new ArrayList<>();  //本年全部数据
 
     private DataBaseHelper mDataBaseHelper;
+    Calendar calendar = Calendar.getInstance();
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private ItemTouchHelper helper;
+    private final int VIEW_NUM = 2;
+
+    private LinearLayout linearLayout[] = new LinearLayout[VIEW_NUM];
+
+    private RecyclerView mRecyclerView[] = new RecyclerView[VIEW_NUM];
+    private RecyclerView.Adapter mAdapter[] = new RecyclerView.Adapter[VIEW_NUM];
+    private RecyclerView.LayoutManager mLayoutManager[] = new RecyclerView.LayoutManager[VIEW_NUM];
+
+    //private ItemTouchHelper helper;
 
     private TextView total;
     private TextView totalIn;
@@ -67,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private static String path = "/sdcard/myHead/";// sd路径
     private Uri imageUri;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +92,18 @@ public class MainActivity extends AppCompatActivity {
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE);   //活动的布局会显示在状态栏上面
             getWindow().setStatusBarColor(Color.TRANSPARENT);   //将状态栏设置为透明色
             //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//将状态栏字体设为黑色，该功能在23及以上版本实现
+        }
+
+        linearLayout[0] = findViewById(R.id.today_layout);
+        linearLayout[1] = findViewById(R.id.all_layout);
+
+        //获取手机的宽度
+        WindowManager manager = getWindowManager();
+        DisplayMetrics metrics = new DisplayMetrics();
+        manager.getDefaultDisplay().getMetrics(metrics);
+
+        for(int i = 0; i < VIEW_NUM; i++){
+            linearLayout[i].setMinimumWidth(metrics.widthPixels);
         }
 
         initData();//初始化数据
@@ -101,27 +128,109 @@ public class MainActivity extends AppCompatActivity {
         //获取菜单
         navMenu = navView.getMenu();
 
-        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mAdapter = new MyAdapter(getData());
+        updateTotal();
 
-        deleteAndMoveList();
+        mAdapter[0] = new MyAdapter(dataDate);
+        mAdapter[1] = new MyAdapter(dataAll);
+
+        //deleteAndMoveList();
     }
 
     //初始化账单列表
     private void initView() {
-        mRecyclerView =findViewById(R.id.cost_view);
-        // 设置布局管理器
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        // 设置adapter
-        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView[0] = findViewById(R.id.cost_view_date);
+        mRecyclerView[1] = findViewById(R.id.cost_view);
 
-        helper.attachToRecyclerView(mRecyclerView);
+        for(int i = 0; i < VIEW_NUM; i++){
+            //这个得在前面哈哈哈哈哈
+            mLayoutManager[i] = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+            // 设置布局管理器
+            mRecyclerView[i].setLayoutManager(mLayoutManager[i]);
+            // 设置adapter
+            mRecyclerView[i].setAdapter(mAdapter[i]);
+            //helper.attachToRecyclerView(mRecyclerView[i]);
 
-        //设置系统默认动画
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            //设置系统默认动画
+            mRecyclerView[i].setItemAnimator(new DefaultItemAnimator());
 
-        //mRecyclerView.addItemDecoration();
+            //mRecyclerView[i].addItemDecoration();
+        }
+    }
 
+    //增加一条记录后进行刷新
+    public void updateAfterAddOne(){
+        updateTotal();        //从sql中重新请求数据
+        mAdapter[0].notifyDataSetChanged();        //更新recyclerView
+        mAdapter[1].notifyDataSetChanged();        //更新recyclerView
+    }
+
+    //搜索数据库
+    public void updateTotal(){
+        clearAll();     //清除所有数据
+        queryMysql();   //重新查找数据库
+
+        total = findViewById(R.id.test_content);
+        String totalString = Double.toString(totalAccount);
+
+        if((totalString.indexOf('.')+3)<(totalString.length()-1))
+            total.setText(totalString.substring(0,totalString.indexOf('.')+3));
+        else
+            total.setText(totalString);
+
+        //如果是支出
+        totalOut = findViewById(R.id.total_out);
+        String totalOutString = Double.toString(totalOutAccount);
+
+        if((totalOutString.indexOf('.')+3)<(totalOutString.length()-1))
+            totalOut.setText(totalOutString.substring(0,totalString.indexOf('.')+3));
+        else
+            totalOut.setText(totalOutString);
+
+        totalIn = findViewById(R.id.total_in);
+        String totalInString = Double.toString(totalInAccount);
+
+        if((totalInString.indexOf('.')+3)<(totalInString.length()-1))
+            totalIn.setText(totalInString.substring(0,totalString.indexOf('.')+3));
+        else
+            totalIn.setText(totalInString);
+    }
+
+    //清除主页面的内容
+    public void clearAll(){
+        dataAll.clear();       //清除原data中的内容
+        dataDate.clear();
+        totalAccount = 0.0;
+        totalInAccount = 0.0;
+        totalOutAccount = 0.0;
+    }
+
+    //查找数据库
+    public void queryMysql(){
+        Cursor cursor = mDataBaseHelper.getAllCostData();
+        if(cursor != null){
+            while(cursor.moveToNext()){
+                DailyCost tmpDaily = new DailyCost(R.drawable.duihao);
+                tmpDaily.setName(cursor.getString(cursor.getColumnIndex("cost_type")));
+                tmpDaily.setCost(cursor.getString(cursor.getColumnIndex("cost_money")));
+                tmpDaily.setDate(cursor.getString(cursor.getColumnIndex("cost_date")));
+                tmpDaily.setTime(cursor.getString(cursor.getColumnIndex("cost_time")));
+                dataAll.add(tmpDaily);
+
+
+                if(tmpDaily.getDate().substring(0,2).contains(""+(calendar.get(Calendar.MONTH)+1)) && tmpDaily.getDate().substring(3).contains(""+calendar.get(Calendar.DAY_OF_MONTH))){
+                    dataDate.add(tmpDaily);
+                }
+
+                if(!tmpDaily.getCost().equals("")){
+                    totalAccount += Double.parseDouble(tmpDaily.getCost());
+                    if(tmpDaily.getCost().charAt(0) == '-')
+                        totalOutAccount += Double.parseDouble(tmpDaily.getCost());
+                    else
+                        totalInAccount += Double.parseDouble(tmpDaily.getCost());
+                }
+            }
+        }
+        cursor.close();
     }
 
     public void clickListenerSet(){
@@ -179,149 +288,6 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     };
-
-    public void deleteAndMoveList(){
-        //实现侧滑删除
-        helper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
-            @Override
-            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                //首先回调的方法 返回int表示是否监听该方向
-                int dragFlags = ItemTouchHelper.UP|ItemTouchHelper.DOWN;//拖拽
-                int swipeFlags = ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT;//侧滑删除
-                return makeMovementFlags(dragFlags,swipeFlags);
-            }
-
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                //滑动事件
-                Collections.swap(data,viewHolder.getAdapterPosition(),target.getAdapterPosition());
-                mAdapter.notifyItemMoved(viewHolder.getAdapterPosition(),target.getAdapterPosition());
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                //侧滑事件
-
-                //删除之后重新设置总花销金额
-                totalAccount -= Double.parseDouble(data.get(viewHolder.getAdapterPosition()).getCost());
-                total = findViewById(R.id.test_content);
-                String totalString = Double.toString(totalAccount);
-
-                //判断是否小数点后面有多于两位的，如果多于两位小数点后就保留两位
-                if((totalString.indexOf('.')+3)<(totalString.length()-1))
-                    total.setText(totalString.substring(0,totalString.indexOf('.')+3));
-                else
-                    total.setText(totalString);
-
-                //如果是支出
-                if(data.get(viewHolder.getAdapterPosition()).getCost().charAt(0) == '-'){
-                    totalOutAccount -= Double.parseDouble(data.get(viewHolder.getAdapterPosition()).getCost());
-                    totalOut = findViewById(R.id.total_out);
-                    String totalOutString = Double.toString(totalOutAccount);
-
-                    if((totalOutString.indexOf('.')+3)<(totalOutString.length()-1))
-                        totalOut.setText(totalOutString.substring(0,totalString.indexOf('.')+3));
-                    else
-                        totalOut.setText(totalOutString);
-                }else{//如果是收入
-                    totalInAccount -= Double.parseDouble(data.get(viewHolder.getAdapterPosition()).getCost());
-                    totalIn = findViewById(R.id.total_in);
-                    String totalInString = Double.toString(totalInAccount);
-
-                    if((totalInString.indexOf('.')+3)<(totalInString.length()-1))
-                        totalIn.setText(totalInString.substring(0,totalString.indexOf('.')+3));
-                    else
-                        totalIn.setText(totalInString);
-                }
-
-                mDataBaseHelper.deleteCost(data.get(viewHolder.getAdapterPosition()));
-                data.remove(viewHolder.getAdapterPosition());
-                mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-            }
-
-            @Override
-            public boolean isLongPressDragEnabled() {
-                //是否可拖拽
-                return true;
-            }
-        });
-    }
-
-    //获取数据
-    private ArrayList<DailyCost> getData() {
-        data.clear();
-        updateTotal();
-        return data;
-    }
-
-    //增加一条记录后进行刷新
-    public void updateAfterAddOne(){
-        updateTotal();        //从sql中重新请求数据
-        mAdapter.notifyDataSetChanged();        //更新recyclerView
-    }
-
-    //清除主页面的内容
-    public void clearAll(){
-        data.clear();       //清除原data中的内容
-        totalAccount = 0.0;
-        totalInAccount = 0.0;
-        totalOutAccount = 0.0;
-    }
-
-    //查找数据库
-    public void queryMysql(){
-        Cursor cursor = mDataBaseHelper.getAllCostData();
-        if(cursor != null){
-            while(cursor.moveToNext()){
-                DailyCost tmpDaily = new DailyCost(R.drawable.duihao);
-                tmpDaily.setName(cursor.getString(cursor.getColumnIndex("cost_type")));
-                tmpDaily.setCost(cursor.getString(cursor.getColumnIndex("cost_money")));
-                tmpDaily.setDate(cursor.getString(cursor.getColumnIndex("cost_date")));
-                tmpDaily.setTime(cursor.getString(cursor.getColumnIndex("cost_time")));
-                data.add(tmpDaily);
-                if(!tmpDaily.getCost().equals("")){
-                    totalAccount += Double.parseDouble(tmpDaily.getCost());
-                    if(tmpDaily.getCost().charAt(0) == '-')
-                        totalOutAccount += Double.parseDouble(tmpDaily.getCost());
-                    else
-                        totalInAccount += Double.parseDouble(tmpDaily.getCost());
-                }
-            }
-        }
-        cursor.close();
-    }
-
-    //搜索数据库
-    public void updateTotal(){
-        clearAll();     //清除所有数据
-        queryMysql();   //重新查找数据库
-
-        total = findViewById(R.id.test_content);
-        String totalString = Double.toString(totalAccount);
-
-        if((totalString.indexOf('.')+3)<(totalString.length()-1))
-            total.setText(totalString.substring(0,totalString.indexOf('.')+3));
-        else
-            total.setText(totalString);
-
-        //如果是支出
-            totalOut = findViewById(R.id.total_out);
-            String totalOutString = Double.toString(totalOutAccount);
-
-            if((totalOutString.indexOf('.')+3)<(totalOutString.length()-1))
-                totalOut.setText(totalOutString.substring(0,totalString.indexOf('.')+3));
-            else
-                totalOut.setText(totalOutString);
-
-            totalIn = findViewById(R.id.total_in);
-            String totalInString = Double.toString(totalInAccount);
-
-            if((totalInString.indexOf('.')+3)<(totalInString.length()-1))
-                totalIn.setText(totalInString.substring(0,totalString.indexOf('.')+3));
-            else
-                totalIn.setText(totalInString);
-    }
 
     //页面信息相互传递
     @Override

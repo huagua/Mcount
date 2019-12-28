@@ -9,9 +9,14 @@
             android:icon="@drawable/chartarc"
             android:title="图表" />
 
+        <item
+            android:id="@+id/nav_yusuan"
+            android:icon="@drawable/xiangmuyusuan"
+            android:title="预算" />
+
     </group>
 
-    <item android:title="user" android:icon="@drawable/user">
+    <item android:title="user">
         <menu>
             <item
                 android:id="@+id/nav_login"
@@ -20,7 +25,7 @@
 
             <item
                 android:id="@+id/nav_register"
-                android:icon="@drawable/register"
+                android:icon="@drawable/user"
                 android:title="用户注册" />
 
             <item
