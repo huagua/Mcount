@@ -11,13 +11,17 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Scroller;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -83,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
     private static String path = "/sdcard/myHead/";// sd路径
     private Uri imageUri;
 
+    int mOldScrollX = 0;
+    int mCurScrollX;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
         //获取手机的宽度
         WindowManager manager = getWindowManager();
-        DisplayMetrics metrics = new DisplayMetrics();
+        final DisplayMetrics metrics = new DisplayMetrics();
         manager.getDefaultDisplay().getMetrics(metrics);
 
         for(int i = 0; i < VIEW_NUM; i++){
@@ -113,8 +120,53 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mHorizontalScrollView = findViewById(R.id.account_show);
+        mHorizontalScrollView.setSmoothScrollingEnabled(false);
+        //mHorizontalScrollView.setNestedScrollingEnabled(false);
 
-        mHorizontalScrollView.setSmoothScrollingEnabled(true);
+        /*
+        mHorizontalScrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mOldScrollX = mHorizontalScrollView.getScrollX();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mCurScrollX = mHorizontalScrollView.getScrollX();
+                        if ((mCurScrollX - mOldScrollX) > 0) {
+                            mHorizontalScrollView.scrollTo((mOldScrollX/metrics.widthPixels+1)*metrics.widthPixels,0);
+                        } else if ((mCurScrollX - mOldScrollX) < 0) {
+                            mHorizontalScrollView.scrollTo((mOldScrollX/metrics.widthPixels-1)*metrics.widthPixels, 0);
+                        } else {
+                            mHorizontalScrollView.scrollTo((mOldScrollX/metrics.widthPixels)*metrics.widthPixels, 0);
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
+         */
+
+        if(Build.VERSION.SDK_INT>=23){
+            mHorizontalScrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+                @Override
+                public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                    if (scrollX > oldScrollX) {
+                        //mHorizontalScrollView.smoothScrollTo((oldScrollX/metrics.widthPixels+1)*metrics.widthPixels,0);
+                        //mHorizontalScrollView.setScrollX((oldScrollX/metrics.widthPixels+1)*metrics.widthPixels);
+                        nextView((oldScrollX/metrics.widthPixels+1)*metrics.widthPixels);
+                    }else if (scrollX < oldScrollX && oldScrollX != 0) {
+                        //mHorizontalScrollView.smoothScrollTo((oldScrollX/metrics.widthPixels-1)*metrics.widthPixels,0);
+                       // mHorizontalScrollView.setScrollX((oldScrollX/metrics.widthPixels-1)*metrics.widthPixels);
+                        nextView((oldScrollX/metrics.widthPixels-1)*metrics.widthPixels);
+                    }
+                }
+
+                public void nextView(int viewNext){
+                    mHorizontalScrollView.setScrollX((viewNext));
+                }
+            });
+        }
 
         initData();//初始化数据
         initView();//初始化页面
@@ -169,6 +221,8 @@ public class MainActivity extends AppCompatActivity {
 
             //设置系统默认动画
             mRecyclerView[i].setItemAnimator(new DefaultItemAnimator());
+            mRecyclerView[i].setNestedScrollingEnabled(false);
+
 
             //mRecyclerView[i].addItemDecoration();
         }
